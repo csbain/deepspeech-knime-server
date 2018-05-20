@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM python:3.6.5-jessie
 
 EXPOSE 5000
 ADD . /app
