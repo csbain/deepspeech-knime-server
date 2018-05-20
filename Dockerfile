@@ -1,8 +1,8 @@
 FROM ubuntu:16.04
 
 EXPOSE 5000
-ADD . /service
-WORKDIR /service
+ADD . /app
+WORKDIR /app
 
 RUN apt-get update
 RUN apt-get install locales
@@ -36,6 +36,6 @@ RUN pip3.6 --no-cache-dir install -U setuptools numpy Pillow scikit-image h5py l
 # Grab the checked out source
 
 
-ENTRYPOINT ["python3.6", "app.py"]
+ENTRYPOINT ["python3.6", "main.py"]
 
 #COPY . /workdir

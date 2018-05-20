@@ -7,7 +7,7 @@ import concurrent.futures
 import time
 
 
-class Main():
+class Service():
 
     ds = DeepSpeechImp()
     vk = OpenVokaturiImp()
@@ -17,7 +17,7 @@ class Main():
             print("starting segment (processing emotion): "+str(segment.order))
             segment.emotion = self.vk.analyse_audio(segment.path)
             print("starting segment (processing speech): " + str(segment.order))
-            segment.content = self.ds.process_audio(segment.path)
+            # segment.content = self.ds.process_audio(segment.path)
             print("finished segment: " + str(segment.order))
             return segment.get_dict_obj()
         except Exception as e:
@@ -48,4 +48,7 @@ class Main():
 
         time_taken = (time.time() - start_time)
         print("--- %s seconds ---\n\n" % time_taken)
-        return results
+
+        results_sorted = sorted(results, key=lambda k: k['order'])
+
+        return results_sorted

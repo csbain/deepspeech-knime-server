@@ -4,4 +4,4 @@ web:
   ports:
     - "5000:5000"
   volumes:
-    - .:/service
+    - .:/app

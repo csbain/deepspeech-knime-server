@@ -1,4 +1,4 @@
-from service.lib.vokaturi import Vokaturi
+from lib.vokaturi import Vokaturi
 import scipy.io.wavfile
 
 
