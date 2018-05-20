@@ -31,7 +31,10 @@ EXPOSE 5000
 ADD app /app
 WORKDIR /app
 
-RUN if [ ! -d models/0.1.1 ]; then  wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -; fi
+RUN rm -rf /app/models
+#RUN wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -
+#RUN if [ ! -d models]; then  wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -; fi
+
 
 ENTRYPOINT ["python3", "main.py"]
 
