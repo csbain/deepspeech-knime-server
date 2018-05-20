@@ -1,10 +1,11 @@
-FROM python:3.6.5-jessie
+FROM ubuntu:16.04
 
 EXPOSE 5000
 ADD . /app
 WORKDIR /app
 
-RUN apt-get update
+
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install locales
 
 # Set the locale
