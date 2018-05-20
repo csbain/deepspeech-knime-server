@@ -1,9 +1,5 @@
 FROM ubuntu:16.04
 
-EXPOSE 5000
-ADD . /app
-WORKDIR /app
-
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install locales
@@ -32,8 +28,15 @@ RUN pip3.6 --no-cache-dir install -U setuptools numpy Pillow scikit-image h5py l
     pyAudioAnalysis pyclustering enum34 python_speech_features sox webrtcvad \
     pysoundfile Flask
 
+
 RUN mkdir models && cd models && \
     wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -
+
+
+EXPOSE 5000
+ADD . /app
+WORKDIR /app
+
 
 
 # Grab the checked out source
