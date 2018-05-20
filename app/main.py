@@ -1,6 +1,4 @@
-import os
-from flask import Flask, redirect, url_for, request, render_template, make_response, jsonify
-from werkzeug.utils import secure_filename
+from flask import Flask, request, make_response, jsonify
 from Service import Service
 
 app = Flask(__name__)
