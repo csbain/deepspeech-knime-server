@@ -26,12 +26,12 @@ RUN pip3 --no-cache-dir install -U setuptools numpy Pillow scikit-image h5py lib
     pysoundfile Flask
 
 
+
 EXPOSE 5000
 ADD app /app
 WORKDIR /app
 
-RUN mkdir models && cd models && \
-    wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -
+RUN if [ ! -d models/0.1.1 ]; then  wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -; fi
 
 ENTRYPOINT ["python3", "main.py"]
 

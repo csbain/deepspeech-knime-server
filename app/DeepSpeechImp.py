@@ -2,7 +2,7 @@ from deepspeech.model import Model
 import scipy.io.wavfile as wav
 
 
-DS_MODEL_BASE = 'models/'
+DS_MODEL_BASE = '/app/models/0.1.1/'
 
 DS_MODEL = DS_MODEL_BASE + 'output_graph.pb'
 DS_ALPHABET = DS_MODEL_BASE + 'alphabet.txt'
