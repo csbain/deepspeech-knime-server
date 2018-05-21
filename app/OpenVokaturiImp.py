@@ -1,8 +1,8 @@
-from lib.vokaturi import Vokaturi
 import scipy.io.wavfile
+from lib.vokaturi import Vokaturi
 
 
-class OpenVokaturiImp():
+class OpenVokaturiImp:
     def __init__(self):
         print("Loading library...")
         Vokaturi.load("lib/vokaturi/linux/OpenVokaturi-3-0-linux64.so")

@@ -1,16 +1,15 @@
-
-class SRSegment(object):
+class SRSegment:
     order = None
     timestamp = None
     duration = None
     path = None
     content = None
     emotion = {
-        "neutrality":None,
-        "happiness":None,
-        "sadness":None,
-        "anger":None,
-        "fear":None
+        "neutrality": None,
+        "happiness": None,
+        "sadness": None,
+        "anger": None,
+        "fear": None,
     }
 
     def __init__(self, order, timestamp, duration, path):
@@ -21,9 +20,9 @@ class SRSegment(object):
 
     def get_dict_obj(self):
         return {
-            "order":self.order,
-            "timestamp":self.timestamp,
-            "duration":self.duration,
-            "content":self.content,
-            "emotion":self.emotion
+            "order": self.order,
+            "timestamp": self.timestamp,
+            "duration": self.duration,
+            "content": self.content,
+            "emotion": self.emotion,
         }

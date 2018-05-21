@@ -2,25 +2,22 @@ import collections
 import contextlib
 import wave
 import webrtcvad
-from SRSegment import SRSegment
 import SharedParams
+from SRSegment import SRSegment
 
 
-class WebRTCVADHelper():
-
+class WebRTCVADHelper:
     vad = None
     sample_rate = None
-
 
     sr_segment_count = 0
     sr_segment_list = []
 
     def __init__(self, temp_file_helper, import_wav_path):
-        self.vad = webrtcvad.Vad(0) #agressiveness
+        self.vad = webrtcvad.Vad(0)  # agressiveness
         self.sample_rate = SharedParams.SAMPLE_RATE
         self.pcm_data = None
         self.temp_file_helper = temp_file_helper
-
 
         with contextlib.closing(wave.open(import_wav_path, 'rb')) as wf:
             num_channels = wf.getnchannels()
@@ -55,7 +52,6 @@ class WebRTCVADHelper():
 
     def vad_processor(self, sample_rate, frame_duration_ms,
                       padding_duration_ms, vad, frames):
-
 
         num_padding_frames = int(padding_duration_ms / frame_duration_ms)
         # We use a deque for our sliding window/ring buffer.
@@ -101,16 +97,12 @@ class WebRTCVADHelper():
             temp_file_name, wav_duration = self.write_wave(b''.join([f.bytes for f in voiced_frames]))
             self.create_sr_segment(frame, temp_file_name, wav_duration)
 
-
-
-
     def create_sr_segment(self, frame, segment_file_name, segment_duration):
 
         srsegment = SRSegment(self.sr_segment_count, frame.timestamp - segment_duration,
                               segment_duration, segment_file_name)
         self.sr_segment_list.append(srsegment)
         self.sr_segment_count += 1
-
 
     def write_wave(self, audio):
         """Writes a .wav file.
@@ -126,8 +118,10 @@ class WebRTCVADHelper():
             duration = wf.getnframes() / float(wf.getframerate())
         return temp_filename, duration
 
+
 class Frame(object):
     """Represents a "frame" of audio data."""
+
     def __init__(self, bytes, timestamp, duration):
         self.bytes = bytes
         self.timestamp = timestamp

@@ -1,6 +1,9 @@
 
 out/**
 
+app/models/**
+
+
 # Created by https://www.gitignore.io/api/linux,python,windows,pycharm+all,intellij+all
 
 ### Intellij+all ###

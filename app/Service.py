@@ -1,30 +1,27 @@
-from AudioUtils import AudioUtils
-from WebRTCVADHelper import WebRTCVADHelper
-from TempFileHelper import TempFileHelper
-from DeepSpeechImp import DeepSpeechImp
-from OpenVokaturiImp import OpenVokaturiImp
 import concurrent.futures
 import time
+from AudioUtils import AudioUtils
+from DeepSpeechImp import DeepSpeechImp
+from OpenVokaturiImp import OpenVokaturiImp
+from TempFileHelper import TempFileHelper
+from WebRTCVADHelper import WebRTCVADHelper
 
 
-class Service():
-
+class Service:
     ds = DeepSpeechImp()
     vk = OpenVokaturiImp()
 
     def process_segment(self, segment):
         try:
-            print("starting segment (processing emotion): "+str(segment.order))
+            print("starting segment (processing emotion): " + str(segment.order))
             segment.emotion = self.vk.analyse_audio(segment.path)
             print("starting segment (processing speech): " + str(segment.order))
-            # segment.content = self.ds.process_audio(segment.path)
+            segment.content = self.ds.process_audio(segment.path)
             print("finished segment: " + str(segment.order))
             return segment.get_dict_obj()
         except Exception as e:
             print("Error in segment: " + str(segment.order)) + "\n\n" + str(e)
             return {}
-
-
 
     def process_audio(self, bytes, file_type):
         temp_file_helper = TempFileHelper()

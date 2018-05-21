@@ -3,11 +3,10 @@ from Service import Service
 
 app = Flask(__name__)
 
-
 ALLOWED_EXTENSIONS = set(['wav', 'mp3', 'flac', 'aiff', 'm4a', 'm4b', 'au', 'dvf', 'gsm', 'mmf',
-                          'mpc', 'ogg', 'oga', 'mogg', 'opus', 'ra', 'rm', 'raw', 'vox', 'tta', 'wma',' webm'])
+                          'mpc', 'ogg', 'oga', 'mogg', 'opus', 'ra', 'rm', 'raw', 'vox', 'tta', 'wma', ' webm'])
 service = Service()
-app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024 # 1 GB
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 1 GB
 
 
 def allowed_file(filename):
@@ -18,6 +17,10 @@ def allowed_file(filename):
 def throw_error_code(error_code, error_statement="error"):
     return make_response(error_statement, error_code)
 
+
+@app.route('/', methods=['GET'])
+def main():
+    return make_response("Service Running OK", 200)
 
 
 @app.route('/upload', methods=['POST'])

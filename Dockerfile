@@ -1,6 +1,5 @@
 FROM python:3.6
 
-
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install locales
 
@@ -18,23 +17,19 @@ RUN apt-get update
 
 RUN apt-get install -y wget unzip cmake gcc git libcunit1-dev libudev-dev \
 libleveldb-dev libssl-dev g++ curl libfreetype6-dev libpng12-dev libzmq3-dev \
-wget pkg-config pkg-config python-software-properties libsndfile-dev sox libsox*
+wget pkg-config pkg-config python-software-properties libsndfile-dev sox libsox* tar
 
 RUN pip3 --no-cache-dir install -U setuptools numpy Pillow scikit-image h5py librosa \
     AudioSegment hmmlearn Pillow simplejson eyed3 pydub scipy tensorflow mkl ipykernel deepspeech \
     pyAudioAnalysis pyclustering enum34 python_speech_features sox webrtcvad \
     pysoundfile Flask
 
-
-
-EXPOSE 5000
 ADD app /app
 WORKDIR /app
-
-RUN rm -rf /app/models
-#RUN wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -
-#RUN if [ ! -d models]; then  wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -; fi
-
-
-ENTRYPOINT ["python3", "main.py"]
+RUN pwd && ls
+RUN wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -
+RUN cd / && pwd && ls
+EXPOSE 5000
+ENTRYPOINT ["python3"]
+CMD ["main.py"]
 

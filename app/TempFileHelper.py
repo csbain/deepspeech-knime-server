@@ -1,12 +1,12 @@
-import tempfile
 import os
+import tempfile
 
-class TempFileHelper():
+
+class TempFileHelper:
     working_temp_folder = None
 
     def __init__(self):
         self.working_temp_folder = tempfile.TemporaryDirectory()
-
 
     def generate_temp_filename(self, ext=None):
         file_name = next(tempfile._get_candidate_names())
