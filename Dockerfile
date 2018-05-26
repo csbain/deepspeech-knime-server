@@ -32,4 +32,3 @@ RUN cd / && pwd && ls
 EXPOSE 5000
 ENTRYPOINT ["python3"]
 CMD ["main.py"]
-
