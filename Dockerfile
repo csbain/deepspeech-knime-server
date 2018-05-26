@@ -1,7 +1,7 @@
 FROM python:3.6
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
-RUN apt-get install locales
+RUN apt-get install -y locales
 
 # Set the locale
 RUN locale-gen en_US.UTF-8
