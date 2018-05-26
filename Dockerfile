@@ -24,7 +24,7 @@ RUN pip3 --no-cache-dir install -U setuptools numpy Pillow scikit-image h5py lib
     pyAudioAnalysis pyclustering enum34 python_speech_features sox webrtcvad \
     pysoundfile Flask
 
-ADD app /app
+COPY app /app
 WORKDIR /app
 RUN pwd && ls
 RUN wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -
