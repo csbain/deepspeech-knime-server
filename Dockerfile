@@ -26,9 +26,7 @@ RUN pip3 --no-cache-dir install -U setuptools numpy Pillow scikit-image h5py lib
 
 COPY app /app
 WORKDIR /app
-RUN pwd && ls
 RUN wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -
-RUN cd / && pwd && ls
 EXPOSE 5000
 ENTRYPOINT ["python3"]
 CMD ["main.py"]
