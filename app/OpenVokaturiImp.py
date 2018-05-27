@@ -1,11 +1,14 @@
 import scipy.io.wavfile
 from vokaturi import Vokaturi
-
+import platform
 
 class OpenVokaturiImp:
     def __init__(self):
         print("Loading library...")
-        Vokaturi.load("vokaturi/linux/OpenVokaturi-3-0-linux64.so")
+        if platform.machine().endswith('64'):
+            Vokaturi.load("vokaturi/linux/OpenVokaturi-3-0-linux64.so")
+        else:
+            Vokaturi.load("vokaturi/linux/OpenVokaturi-3-0-linux32.so")
         print("Analyzed by: %s" % Vokaturi.versionAndLicense())
 
     def analyse_audio(self, file_name):
