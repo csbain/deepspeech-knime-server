@@ -16,8 +16,8 @@ RUN apt-get install -y software-properties-common
 RUN apt-get update
 
 RUN apt-get install -y wget unzip cmake gcc git libcunit1-dev libudev-dev \
-libleveldb-dev libssl-dev g++ curl libfreetype6-dev libpng12-dev libzmq3-dev \
-wget pkg-config pkg-config python-software-properties libsndfile-dev sox libsox* tar
+libleveldb-dev libssl-dev g++ curl libfreetype6-dev libzmq3-dev \
+wget pkg-config pkg-config libsndfile-dev sox libsox* tar
 
 RUN pip3 --no-cache-dir install -U setuptools numpy Pillow scikit-image h5py librosa \
     AudioSegment hmmlearn Pillow simplejson eyed3 pydub scipy tensorflow mkl ipykernel deepspeech \
