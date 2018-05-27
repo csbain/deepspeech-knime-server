@@ -15,7 +15,7 @@ RUN apt-get update
 RUN apt-get install -y software-properties-common
 RUN apt-get update
 
-RUN apt-get install -y wget tree unzip cmake gcc git libcunit1-dev libudev-dev \
+RUN apt-get install -y wget unzip cmake gcc git libcunit1-dev libudev-dev \
 libleveldb-dev libssl-dev g++ curl libfreetype6-dev libzmq3-dev \
 wget pkg-config pkg-config libsndfile-dev sox libsox* tar
 
@@ -27,7 +27,6 @@ RUN pip3 --no-cache-dir install -U setuptools numpy Pillow scikit-image h5py lib
 COPY app /app
 WORKDIR /app
 RUN wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | tar xvfz -
-RUN tree
 EXPOSE 5000
 ENTRYPOINT ["python3"]
 CMD ["main.py"]
