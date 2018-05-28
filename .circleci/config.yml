@@ -15,6 +15,12 @@ jobs:
             pip install \
               docker-compose==1.12.0 \
               awscli==1.11.76
+      - run:
+          name: Download Deepspeech models
+          command: |
+            cd app && wget -O - \
+            https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | \
+            tar xvfz -
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
