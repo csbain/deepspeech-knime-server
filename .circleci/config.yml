@@ -10,8 +10,12 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --no-cache \
-              py-pip=9.0.0-r1
+            apk update \
+            && apk add --no-cache \
+              ca-certificates \
+              py-pip=9.0.0-r1 \
+              wget \
+              && update-ca-certificates
             pip install \
               docker-compose==1.12.0 \
               awscli==1.11.76
