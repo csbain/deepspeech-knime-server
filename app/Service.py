@@ -17,22 +17,38 @@ class Service:
             segment.emotion = self.vk.analyse_audio(segment.path)
             print(segment.emotion)
             print("starting segment (processing speech): " + str(segment.order))
+            start_time = time.time()
             segment.content = self.ds.process_audio(segment.path)
+            time_taken = (time.time() - start_time)
             print(segment.content)
-            print("finished segment: " + str(segment.order))
+            print("finished segment: " + str(segment.order) + ", duration length: "+ str(segment.duration) +", time taken: " + str(round(time_taken, 2)) +", duration/segment_lenght ratio: " + str(round(time_taken/segment.duration, 2)))
             return segment.get_dict_obj()
         except Exception as e:
-            print("Error in segment: " + str(segment.order)) + "\n\n" + str(e)
+            print("Error in segment:")
+            print(str(e))
+            print(segment.get_dict_obj())
             return {}
+
+    def print_metrics(self, seg_list):
+        max_seg_length = 0
+        for segment in seg_list:
+            if segment.duration > max_seg_length:
+                max_seg_length = segment.duration
+        print("Number of segments to process: "+str(len(seg_list)))
+        print("Longest duration of segment: "+str(max_seg_length))
+
 
 
     def process_audio_singlethreaded(self, bytes, file_type):
         temp_file_helper = TempFileHelper()
+        print("Preprocessing audio from "+file_type+" format")
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
+        print("Breaking down audio into smaller chunks")
         web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
         seg_list = web_rtcvad_helper.get_sr_segment_list()
+        self.print_metrics(seg_list)
         del web_rtcvad_helper, audioutil, bytes
-        print("processing")
+        print("processing single threaded")
         start_time = time.time()
         results = []
         for segment in seg_list:
@@ -45,11 +61,14 @@ class Service:
 
     def process_audio_multithreaded(self, bytes, file_type):
         temp_file_helper = TempFileHelper()
+        print("Preprocessing audio from "+file_type+" format")
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
+        print("Breaking down audio into smaller chunks")
         web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
         seg_list = web_rtcvad_helper.get_sr_segment_list()
+        self.print_metrics(seg_list)
         del web_rtcvad_helper, audioutil, bytes
-        print("processing")
+        print("processing multithreaded")
         start_time = time.time()
         results = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
