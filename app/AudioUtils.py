@@ -21,7 +21,7 @@ class AudioUtils():
             f_main.write(file_bytes)
             f_wip.write(file_bytes)
 
-        self.convert_audio(file_type=file_ext, samplerate=16000, n_channels=1)
+        self.convert_audio(file_type=file_ext)
         self.clean_audio()
 
     def generate_noise_profile(self, seconds_start=0, seconds_finish=0.5):
@@ -31,11 +31,11 @@ class AudioUtils():
         tfm.build(self.wip_temp_audio_file, None, extra_args=effect_args)
         return wip_profile_file
 
-    def convert_audio(self, file_type=None, samplerate=None, n_channels=None, bitdepth=None):
+    def convert_audio(self, file_type=None):
         wip_audio_file = self.temp_file_helper.generate_temp_filename("wav")
         tfm = sox.Transformer()
         tfm.set_input_format(file_type=file_type)
-        tfm.convert(samplerate=samplerate, n_channels=n_channels, bitdepth=bitdepth)
+        tfm.convert(samplerate=16000, n_channels=1, bitdepth=16)
         tfm.build(self.wip_temp_audio_file, wip_audio_file)
         self.wip_temp_audio_file = wip_audio_file
         return self
@@ -47,9 +47,11 @@ class AudioUtils():
         tfm.highpass(150)
         tfm.lowpass(6000)
         # tfm.norm(-2.0)
+        tfm.convert(samplerate=16000, n_channels=1, bitdepth=16)
         tfm.build(self.wip_temp_audio_file, wip_audio_file)
         self.wip_temp_audio_file = wip_audio_file
         return self
+
 
     def get_processed_file(self):
         return self.wip_temp_audio_file

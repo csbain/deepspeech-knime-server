@@ -10,16 +10,17 @@ from WebRTCVADHelper import WebRTCVADHelper
 class Service:
     
     vk = OpenVokaturiImp()
+    ds = DeepSpeechImp()
 
     def process_segment(self, segment):
         try:
-            ds = DeepSpeechImp()
+            
             print("starting segment (processing emotion): " + str(segment.order))
             segment.emotion = self.vk.analyse_audio(segment.path)
             print(segment.emotion)
             print("starting segment (processing speech): " + str(segment.order))
             start_time = time.time()
-            segment.content = ds.process_audio(segment.path)
+            segment.content = self.ds.process_audio(segment.path)
             time_taken = (time.time() - start_time)
             print(segment.content)
             print("finished segment: " + str(segment.order) + ", duration length: "+ str(segment.duration) +", time taken: " + str(round(time_taken, 2)) +", duration/segment_lenght ratio: " + str(round(time_taken/segment.duration, 2)))
@@ -78,10 +79,17 @@ class Service:
                 future = executor.submit(self.process_segment, segment)
                 to_do.append(future)
             for future in concurrent.futures.as_completed(to_do):
+                result_temp = {}
                 try:
-                    results.append(future.result())
+                    result_temp = future.result(timeout=60)
+                    results.append(result_temp)
+                except concurrent.futures.TimeoutError:
+                    print("this took too long...")
+                    future.interrupt()
                 except Exception as e:
                     print('error: ' + str(e))
+                finally:
+                    results.append(result_temp)
 
         time_taken = (time.time() - start_time)
         print("--- %s seconds ---\n\n" % time_taken)
