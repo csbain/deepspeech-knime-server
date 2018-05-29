@@ -11,19 +11,20 @@ class Service:
     
     vk = OpenVokaturiImp()
     ds = DeepSpeechImp()
+    segment_count = 0
 
     def process_segment(self, segment):
         try:
             
-            print("starting segment (processing emotion): " + str(segment.order))
+            print("starting segment (processing emotion): " + str(segment.order)+"/"+str(self.segment_count))
             segment.emotion = self.vk.analyse_audio(segment.path)
             print(segment.emotion)
-            print("starting segment (processing speech): " + str(segment.order))
+            print("starting segment (processing speech): " + str(segment.order)+"/"+str(self.segment_count))
             start_time = time.time()
             segment.content = self.ds.process_audio(segment.path)
             time_taken = (time.time() - start_time)
             print(segment.content)
-            print("finished segment: " + str(segment.order) + ", duration length: "+ str(segment.duration) +", time taken: " + str(round(time_taken, 2)) +", duration/segment_lenght ratio: " + str(round(time_taken/segment.duration, 2)))
+            print("finished segment: " + str(segment.order)+"/"+str(self.segment_count) + ", duration length: "+ str(segment.duration) +", time taken: " + str(round(time_taken, 2)) +", duration/segment_lenght ratio: " + str(round(time_taken/segment.duration, 2)))
             return segment.get_dict_obj()
         except Exception as e:
             print("Error in segment:")
@@ -53,6 +54,7 @@ class Service:
         print("processing single threaded")
         start_time = time.time()
         results = []
+        self.segment_count = len(seg_list)
         for segment in seg_list:
             results.append(self.process_segment(segment))
 
@@ -73,7 +75,8 @@ class Service:
         print("processing multithreaded")
         start_time = time.time()
         results = []
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        self.segment_count = len(seg_list)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
             to_do = []
             for segment in seg_list:
                 future = executor.submit(self.process_segment, segment)
