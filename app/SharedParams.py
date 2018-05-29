@@ -11,7 +11,7 @@ DS_LANGUAGE_MODEL = DS_MODEL_BASE + "lm.binary"
 BEAM_WIDTH = 500
 
 # The alpha hyperparameter of the CTC decoder. Language Model weight
-LM_WEIGHT = 1.25
+LM_WEIGHT = 1.75
 
 # The beta hyperparameter of the CTC decoder. Word insertion weight (penalty)
 WORD_COUNT_WEIGHT = 1.00
