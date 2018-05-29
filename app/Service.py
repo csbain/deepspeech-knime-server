@@ -25,7 +25,25 @@ class Service:
             print("Error in segment: " + str(segment.order)) + "\n\n" + str(e)
             return {}
 
-    def process_audio(self, bytes, file_type):
+
+    def process_audio_singlethreaded(self, bytes, file_type):
+        temp_file_helper = TempFileHelper()
+        audioutil = AudioUtils(temp_file_helper, bytes, file_type)
+        web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
+        seg_list = web_rtcvad_helper.get_sr_segment_list()
+        del web_rtcvad_helper, audioutil, bytes
+        print("processing")
+        start_time = time.time()
+        results = []
+        for segment in seg_list:
+            results.append(self.process_segment(segment))
+
+        time_taken = (time.time() - start_time)
+        print("--- %s seconds ---\n\n" % time_taken)
+
+        return results
+
+    def process_audio_multithreaded(self, bytes, file_type):
         temp_file_helper = TempFileHelper()
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
         web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
