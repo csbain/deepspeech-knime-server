@@ -1,14 +1,14 @@
 import concurrent.futures
 import time
+import os
 from AudioUtils import AudioUtils
 from DeepSpeechImp import DeepSpeechImp
 from OpenVokaturiImp import OpenVokaturiImp
 from TempFileHelper import TempFileHelper
 from WebRTCVADHelper import WebRTCVADHelper
-
+import gc
 
 class Service:
-    
     vk = OpenVokaturiImp()
     ds = DeepSpeechImp()
     segment_count = 0
@@ -23,6 +23,7 @@ class Service:
             start_time = time.time()
             segment.content = self.ds.process_audio(segment.path)
             time_taken = (time.time() - start_time)
+            os.remove(segment.path)
             print(segment.content)
             print("finished segment: " + str(segment.order)+"/"+str(self.segment_count) + ", duration length: "+ str(segment.duration) +", time taken: " + str(round(time_taken, 2)) +", duration/segment_lenght ratio: " + str(round(time_taken/segment.duration, 2)))
             return segment.get_dict_obj()
@@ -43,6 +44,7 @@ class Service:
 
 
     def process_audio_singlethreaded(self, bytes, file_type):
+
         temp_file_helper = TempFileHelper()
         print("Preprocessing audio from "+file_type+" format")
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
@@ -55,7 +57,17 @@ class Service:
         start_time = time.time()
         results = []
         self.segment_count = len(seg_list)
+        count = 0
         for segment in seg_list:
+            count +=1
+            if count % 20 == 0:
+                print("restarting Deepspeech and OpenVokaturi to free up memory")
+                self.vk = None
+                self.ds = None
+                gc.collect()
+                self.vk = OpenVokaturiImp()
+                self.ds = DeepSpeechImp()
+
             results.append(self.process_segment(segment))
 
         time_taken = (time.time() - start_time)
@@ -100,3 +112,17 @@ class Service:
         results_sorted = sorted(results, key=lambda k: k['order'])
 
         return results_sorted
+
+
+if __name__ == "__main__":
+    import sys
+    import re
+
+    file = sys.argv[1]
+    extensions = re.findall(r'\.([^.]+)', file)
+    service = Service()
+
+    with open(file, "rb") as in_file:
+        results = service.process_audio_singlethreaded(in_file.read(),extensions[0])
+        print(results)
+
