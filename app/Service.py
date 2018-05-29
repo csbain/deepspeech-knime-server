@@ -52,7 +52,10 @@ class Service:
         web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
         seg_list = web_rtcvad_helper.get_sr_segment_list()
         self.print_metrics(seg_list)
-        del web_rtcvad_helper, audioutil, bytes
+        web_rtcvad_helper = None
+        audioutil = None
+        bytes = None
+        gc.collect()
         print("processing single threaded")
         start_time = time.time()
         results = []
@@ -83,7 +86,10 @@ class Service:
         web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
         seg_list = web_rtcvad_helper.get_sr_segment_list()
         self.print_metrics(seg_list)
-        del web_rtcvad_helper, audioutil, bytes
+        web_rtcvad_helper = None
+        audioutil = None
+        bytes = None
+        gc.collect()
         print("processing multithreaded")
         start_time = time.time()
         results = []
