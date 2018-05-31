@@ -11,17 +11,35 @@ import gc
 import resource
 import multiprocessing
 import time
+import signal
 
+# https://pymotw.com/2/resource/
+#  https://docs.python.org/3.6/library/multiprocessing.html
+#  https://sebastianraschka.com/Articles/2014_multiprocessing.html
+# http://stackabuse.com/parallel-processing-in-python/
+# http://oz123.github.io/writings/2015-02-25-Simple-Multiprocessing-Task-Queue-in-Python/index.html
+# http://www.davekuhlman.org/python_multiprocessing_01.html
+# https://www.journaldev.com/15631/python-multiprocessing-example
 
 class Consumer(multiprocessing.Process):
 
 
-    def __init__(self, task_queue, result_queue, segment_count):
+    def __init__(self, task_queue, result_queue, segment_count, memlimit):
         multiprocessing.Process.__init__(self)
 
         self.segment_count = segment_count
         self.task_queue = task_queue
         self.result_queue = result_queue
+        signal.signal(signal.SIGXCPU, resource_exit)
+        # resource.setrlimit(resource.RLIMIT_CPU, (1, hard))
+        soft, hard = resource.getrlimit(resource.RLIMIT_VMEM)
+        resource.setrlimit(resource.RLIMIT_VMEM, (memlimit, hard))
+
+    def resource_exit(n, stack):
+        # print('EXPIRED :', time.ctime())
+        raise SystemExit('(time ran out)')
+
+
 
     def run(self):
         self.vk = OpenVokaturiImp()
