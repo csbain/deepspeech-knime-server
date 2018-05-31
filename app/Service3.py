@@ -1,5 +1,5 @@
-
 import concurrent.futures
+import multiprocessing
 import time
 import os
 from AudioUtils import AudioUtils
@@ -8,42 +8,15 @@ from OpenVokaturiImp import OpenVokaturiImp
 from TempFileHelper import TempFileHelper
 from WebRTCVADHelper import WebRTCVADHelper
 import gc
-import resource
-import multiprocessing
-import time
-import signal
-
-# https://pymotw.com/2/resource/
-#  https://docs.python.org/3.6/library/multiprocessing.html
-#  https://sebastianraschka.com/Articles/2014_multiprocessing.html
-# http://stackabuse.com/parallel-processing-in-python/
-# http://oz123.github.io/writings/2015-02-25-Simple-Multiprocessing-Task-Queue-in-Python/index.html
-# http://www.davekuhlman.org/python_multiprocessing_01.html
-# https://www.journaldev.com/15631/python-multiprocessing-example
-# https://pymotw.com/2/multiprocessing/communication.html
-# https://docs.python.org/3/library/resource.html
-class Consumer(multiprocessing.Process):
-
-    def __init__(self, task_queue, result_queue, segment_count, memlimit):
-        multiprocessing.Process.__init__(self)
-
-        self.segment_count = segment_count
-        self.task_queue = task_queue
-        self.result_queue = result_queue
-        signal.signal(signal.SIGXCPU, resource_exit)
-        # resource.setrlimit(resource.RLIMIT_CPU, (1, hard))
-        soft, hard = resource.getrlimit(resource.RLIMIT_VMEM)
-        resource.setrlimit(resource.RLIMIT_VMEM, (memlimit, hard))
-
-    def resource_exit(n, stack):
-        # print('EXPIRED :', time.ctime())
-        raise SystemExit('(time ran out)')
 
 
+class Service3:
+    segment_count = 0
 
-    def run(self):
-        self.vk = OpenVokaturiImp()
-        self.ds = DeepSpeechImp()
+
+    def run_queue_watcher(self):
+        vk = OpenVokaturiImp()
+        ds = DeepSpeechImp()
         proc_name = self.name
         while True:
             next_segment = self.task_queue.get()
@@ -82,9 +55,6 @@ class Consumer(multiprocessing.Process):
             return {}
 
 
-
-class Service2:
-
     def print_metrics(self, seg_list):
         max_seg_length = 0
         for segment in seg_list:
@@ -93,7 +63,84 @@ class Service2:
         print("Number of segments to process: " + str(len(seg_list)))
         print("Longest duration of segment: " + str(max_seg_length))
 
-    def process_audio(self, bytes, file_type):
+    #
+    # def process_audio_singlethreaded(self, bytes, file_type):
+    #
+    #     temp_file_helper = TempFileHelper()
+    #     print("Preprocessing audio from "+file_type+" format")
+    #     audioutil = AudioUtils(temp_file_helper, bytes, file_type)
+    #     print("Breaking down audio into smaller chunks")
+    #     web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
+    #     seg_list = web_rtcvad_helper.get_sr_segment_list()
+    #     self.print_metrics(seg_list)
+    #     web_rtcvad_helper = None
+    #     audioutil = None
+    #     bytes = None
+    #     gc.collect()
+    #     print("processing single threaded")
+    #     start_time = time.time()
+    #     results = []
+    #     self.segment_count = len(seg_list)
+    #     count = 0
+    #     for segment in seg_list:
+    #         count +=1
+    #         if count % 20 == 0:
+    #             print("restarting Deepspeech and OpenVokaturi to free up memory")
+    #             self.vk = None
+    #             self.ds = None
+    #             gc.collect()
+    #             self.vk = OpenVokaturiImp()
+    #             self.ds = DeepSpeechImp()
+    #
+    #         results.append(self.process_segment(segment))
+    #
+    #     time_taken = (time.time() - start_time)
+    #     print("--- %s seconds ---\n\n" % time_taken)
+    #
+    #     return results
+    #
+    # def process_audio_multithreaded(self, bytes, file_type):
+    #     temp_file_helper = TempFileHelper()
+    #     print("Preprocessing audio from "+file_type+" format")
+    #     audioutil = AudioUtils(temp_file_helper, bytes, file_type)
+    #     print("Breaking down audio into smaller chunks")
+    #     web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
+    #     seg_list = web_rtcvad_helper.get_sr_segment_list()
+    #     self.print_metrics(seg_list)
+    #     web_rtcvad_helper = None
+    #     audioutil = None
+    #     bytes = None
+    #     gc.collect()
+    #     print("processing multithreaded")
+    #     start_time = time.time()
+    #     results = []
+    #     self.segment_count = len(seg_list)
+    #     with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
+    #         to_do = []
+    #         for segment in seg_list:
+    #             future = executor.submit(self.process_segment, segment)
+    #             to_do.append(future)
+    #         for future in concurrent.futures.as_completed(to_do):
+    #             result_temp = {}
+    #             try:
+    #                 result_temp = future.result(timeout=60)
+    #                 results.append(result_temp)
+    #             except concurrent.futures.TimeoutError:
+    #                 print("this took too long...")
+    #                 future.interrupt()
+    #             except Exception as e:
+    #                 print('error: ' + str(e))
+    #             finally:
+    #                 results.append(result_temp)
+    #
+    #     time_taken = (time.time() - start_time)
+    #     print("--- %s seconds ---\n\n" % time_taken)
+    #
+    #     results_sorted = sorted(results, key=lambda k: k['order'])
+    #
+    #     return results_sorted
+
+    def process_audio_multiprocessor(self, bytes, file_type):
         temp_file_helper = TempFileHelper()
         print("Preprocessing audio from "+file_type+" format")
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
@@ -114,33 +161,22 @@ class Service2:
         tasks_queue = multiprocessing.JoinableQueue()
         results_queue = multiprocessing.Queue()
         num_consumers = multiprocessing.cpu_count()
-        # num_consumers = 1
-        consumers = [Consumer(tasks_queue, results_queue, len(seg_list))
-                     for i in range(num_consumers)]
-
-        for w in consumers:
-            w.start()
-            # Enqueue jobs
-        for segment in seg_list:
-            tasks_queue.put(segment)
-        # Add a poison pill for each consumer
-        for i in range(num_consumers):
-            tasks_queue.put(None)
-
-        tasks_queue.join()
-        while num_jobs:
-            results.append(results_queue.get())
-            num_jobs -= 1
-
-        results_sorted = sorted(results, key=lambda k: k['order'])
-        time_taken = (time.time() - start_time)
-        print("--- %s seconds ---\n\n" % time_taken)
-        return results_sorted
 
 
-    def process_audio1(self, bytes, file_type):
+
+
+
+
+
+
+
+
+
+
+
+
         temp_file_helper = TempFileHelper()
-        print("Preprocessing audio from "+file_type+" format")
+        print("Preprocessing audio from " + file_type + " format")
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
         print("Breaking down audio into smaller chunks")
         web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
@@ -150,43 +186,34 @@ class Service2:
         audioutil = None
         bytes = None
         gc.collect()
-        print("processing single threaded")
+        print("processing multithreaded")
         start_time = time.time()
         results = []
-        num_jobs = len(seg_list)
-
-        count = 0
-        tasks_queue = multiprocessing.JoinableQueue()
-        results_queue = multiprocessing.Queue()
+        self.segment_count = len(seg_list)
         num_consumers = multiprocessing.cpu_count()
-        # num_consumers = 1
-        consumers = [Consumer(tasks_queue, results_queue, len(seg_list))
-                     for i in range(num_consumers)]
-
         with concurrent.futures.ProcessPoolExecutor(max_workers=num_consumers) as executor:
+            to_do = []
             for segment in seg_list:
-                future = executor.submit(Consumer.run, tasks_queue, results_queue, len(seg_list))
+                future = executor.submit(self.process_segment, segment, ds, vk, len(seg_list))
                 to_do.append(future)
             for future in concurrent.futures.as_completed(to_do):
-                for i in range(num_consumers)
+                result_temp = {}
+                try:
+                    result_temp = future.result(timeout=60)
+                    results.append(result_temp)
+                except concurrent.futures.TimeoutError:
+                    print("this took too long...")
+                    future.interrupt()
+                except Exception as e:
+                    print('error: ' + str(e))
+                finally:
+                    results.append(result_temp)
 
-        for w in consumers:
-            w.start()
-            # Enqueue jobs
-        for segment in seg_list:
-            tasks_queue.put(segment)
-        # Add a poison pill for each consumer
-        for i in range(num_consumers):
-            tasks_queue.put(None)
-
-        tasks_queue.join()
-        while num_jobs:
-            results.append(results_queue.get())
-            num_jobs -= 1
-
-        results_sorted = sorted(results, key=lambda k: k['order'])
         time_taken = (time.time() - start_time)
         print("--- %s seconds ---\n\n" % time_taken)
+
+        results_sorted = sorted(results, key=lambda k: k['order'])
+
         return results_sorted
 
 
@@ -197,10 +224,10 @@ if __name__ == "__main__":
     # file = sys.argv[1]
     file = "alice.mp3"
     extensions = re.findall(r'\.([^.]+)', file)
-    service = Service2()
+    service = Service()
 
     with open(file, "rb") as in_file:
-
-        results = service.process_audio(in_file.read(),extensions[0])
+        results = service.process_audio_multiprocessor(in_file.read(), extensions[0])
         print(results)
+
 

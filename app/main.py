@@ -1,5 +1,5 @@
 from flask import Flask, request, make_response, jsonify
-from Service2 import Service2
+from Service import Service
 
 app = Flask(__name__)
 
@@ -34,7 +34,7 @@ def upload():
         if file and allowed_file(file.filename):
             ext = file.filename.rsplit('.', 1)[1].lower()
             bytes = file.read()
-            result = service2.process_audio(bytes, ext)
+            result = Service.process_audio_multiprocessor(bytes, ext)
             return make_response(jsonify(result), 200)
 
 
