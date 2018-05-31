@@ -20,7 +20,7 @@ import signal
 # http://oz123.github.io/writings/2015-02-25-Simple-Multiprocessing-Task-Queue-in-Python/index.html
 # http://www.davekuhlman.org/python_multiprocessing_01.html
 # https://www.journaldev.com/15631/python-multiprocessing-example
-
+# https://pymotw.com/2/multiprocessing/communication.html
 class Consumer(multiprocessing.Process):
 
 
