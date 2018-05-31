@@ -34,7 +34,7 @@ def upload():
         if file and allowed_file(file.filename):
             ext = file.filename.rsplit('.', 1)[1].lower()
             bytes = file.read()
-            result = Service.process_audio_multiprocessor(bytes, ext)
+            result = service.process_audio_multiprocessor(bytes, ext)
             return make_response(jsonify(result), 200)
 
 
