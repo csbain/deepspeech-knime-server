@@ -150,7 +150,7 @@ class Service:
             for future in concurrent.futures.as_completed(to_do):
                 result_temp = {}
                 try:
-                    result_temp = future.result(timeout=60)
+                    result_temp = future.result(timeout=120)
                     results.append(result_temp)
                 except concurrent.futures.TimeoutError:
                     print("this took too long...")
