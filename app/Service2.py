@@ -21,6 +21,7 @@ import signal
 # http://www.davekuhlman.org/python_multiprocessing_01.html
 # https://www.journaldev.com/15631/python-multiprocessing-example
 # https://pymotw.com/2/multiprocessing/communication.html
+# https://docs.python.org/3/library/resource.html
 class Consumer(multiprocessing.Process):
 
 
