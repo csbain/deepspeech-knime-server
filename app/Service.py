@@ -8,8 +8,6 @@ from OpenVokaturiImp import OpenVokaturiImp
 from TempFileHelper import TempFileHelper
 from WebRTCVADHelper import WebRTCVADHelper
 import gc
-import itertools
-import util
 
 class Service:
     def process_segment(self, segments_chunk, total_count):
@@ -53,84 +51,6 @@ class Service:
         print("Longest duration of segment: "+str(max_seg_length))
 
 
-    #
-    # def process_audio_singlethreaded(self, bytes, file_type):
-    #
-    #     temp_file_helper = TempFileHelper()
-    #     print("Preprocessing audio from "+file_type+" format")
-    #     audioutil = AudioUtils(temp_file_helper, bytes, file_type)
-    #     print("Breaking down audio into smaller chunks")
-    #     web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
-    #     seg_list = web_rtcvad_helper.get_sr_segment_list()
-    #     self.print_metrics(seg_list)
-    #     web_rtcvad_helper = None
-    #     audioutil = None
-    #     bytes = None
-    #     gc.collect()
-    #     print("processing single threaded")
-    #     start_time = time.time()
-    #     results = []
-    #     self.segment_count = len(seg_list)
-    #     count = 0
-    #     for segment in seg_list:
-    #         count +=1
-    #         if count % 20 == 0:
-    #             print("restarting Deepspeech and OpenVokaturi to free up memory")
-    #             self.vk = None
-    #             self.ds = None
-    #             gc.collect()
-    #             self.vk = OpenVokaturiImp()
-    #             self.ds = DeepSpeechImp()
-    #
-    #         results.append(self.process_segment(segment))
-    #
-    #     time_taken = (time.time() - start_time)
-    #     print("--- %s seconds ---\n\n" % time_taken)
-    #
-    #     return results
-    #
-    # def process_audio_multithreaded(self, bytes, file_type):
-    #     temp_file_helper = TempFileHelper()
-    #     print("Preprocessing audio from "+file_type+" format")
-    #     audioutil = AudioUtils(temp_file_helper, bytes, file_type)
-    #     print("Breaking down audio into smaller chunks")
-    #     web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
-    #     seg_list = web_rtcvad_helper.get_sr_segment_list()
-    #     self.print_metrics(seg_list)
-    #     web_rtcvad_helper = None
-    #     audioutil = None
-    #     bytes = None
-    #     gc.collect()
-    #     print("processing multithreaded")
-    #     start_time = time.time()
-    #     results = []
-    #     self.segment_count = len(seg_list)
-    #     with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
-    #         to_do = []
-    #         for segment in seg_list:
-    #             future = executor.submit(self.process_segment, segment)
-    #             to_do.append(future)
-    #         for future in concurrent.futures.as_completed(to_do):
-    #             result_temp = {}
-    #             try:
-    #                 result_temp = future.result(timeout=60)
-    #                 results.append(result_temp)
-    #             except concurrent.futures.TimeoutError:
-    #                 print("this took too long...")
-    #                 future.interrupt()
-    #             except Exception as e:
-    #                 print('error: ' + str(e))
-    #             finally:
-    #                 results.append(result_temp)
-    #
-    #     time_taken = (time.time() - start_time)
-    #     print("--- %s seconds ---\n\n" % time_taken)
-    #
-    #     results_sorted = sorted(results, key=lambda k: k['order'])
-    #
-    #     return results_sorted
-
-
     def process_audio_multiprocessor(self, bytes, file_type):
         temp_file_helper = TempFileHelper()
         print("Preprocessing audio from "+file_type+" format")
@@ -150,9 +70,9 @@ class Service:
         start_time = time.time()
         results = []
         segment_count = len(seg_list)
-        # num_consumers = multiprocessing.cpu_count()
-        num_consumers = 2
-        with concurrent.futures.ProcessPoolExecutor(max_workers=num_consumers) as executor:
+        num_consumers = multiprocessing.cpu_count()
+        # num_consumers = 2
+        with concurrent.futures.ThreadPoolExecutor(max_workers=num_consumers) as executor:
 
             to_do = []
             for segments_chunk in chunked_seg_list:
