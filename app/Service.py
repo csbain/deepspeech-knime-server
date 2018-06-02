@@ -12,8 +12,6 @@ import itertools
 import util
 
 class Service:
-    segment_count = 0
-
     def process_segment(self, segments_chunk, total_count):
 
         vk = OpenVokaturiImp()
@@ -22,10 +20,10 @@ class Service:
         for segment in segments_chunk:
 
             try:
-                print("starting segment (processing emotion): " + str(segment.order)+"/"+str(self.segment_count))
+                print("starting segment (processing emotion): " + str(segment.order)+"/"+str(total_count))
                 segment.emotion = vk.analyse_audio(segment.path)
                 print(segment.emotion)
-                print("starting segment (processing speech): " + str(segment.order)+"/"+str(self.segment_count))
+                print("starting segment (processing speech): " + str(segment.order)+"/"+str(total_count))
                 start_time = time.time()
                 segment.content = ds.process_audio(segment.path)
                 time_taken = (time.time() - start_time)
@@ -143,7 +141,7 @@ class Service:
         chunked_seg_list = list(self.chunks(seg_list, 5))
 
 
-        self.print_metrics(list(itertools.chain.from_iterable(seg_list)))
+        self.print_metrics(seg_list)
         web_rtcvad_helper = None
         audioutil = None
         bytes = None
@@ -157,8 +155,8 @@ class Service:
         with concurrent.futures.ProcessPoolExecutor(max_workers=num_consumers) as executor:
 
             to_do = []
-            for segment in chunked_seg_list:
-                future = executor.submit(self.process_segment, segment, segment_count)
+            for segments_chunk in chunked_seg_list:
+                future = executor.submit(self.process_segment, segments_chunk, segment_count)
                 to_do.append(future)
             for future in concurrent.futures.as_completed(to_do):
                 result_temp = {"order":-1}
