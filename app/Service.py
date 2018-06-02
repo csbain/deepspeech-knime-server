@@ -39,11 +39,11 @@ class Service:
                 print(segment.get_dict_obj())
             finally:
                 finished_segments.append(segment.get_dict_obj())
-            del vk
-            del ds
-            gc.collect()
-            # return segment.get_dict_obj()
-            return finished_segments
+        del vk
+        del ds
+        gc.collect()
+        # return segment.get_dict_obj()
+        return finished_segments
 
 
     def print_metrics(self, seg_list):
