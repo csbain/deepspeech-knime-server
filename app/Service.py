@@ -15,10 +15,9 @@ class Service:
 
     def process_segment(self, segment, total_count):
 
-        ds, vk = None, None
         vk = OpenVokaturiImp()
         ds = DeepSpeechImp()
-
+        segment
         try:
             print("starting segment (processing emotion): " + str(segment.order)+"/"+str(self.segment_count))
             segment.emotion = vk.analyse_audio(segment.path)
@@ -30,12 +29,16 @@ class Service:
             os.remove(segment.path)
             print(segment.content)
             print("finished segment: " + str(segment.order)+"/"+str(total_count) + ", duration length: "+ str(segment.duration) +", time taken: " + str(round(time_taken, 2)) +", duration/segment_lenght ratio: " + str(round(time_taken/segment.duration, 2)))
+            ds, vk = None, None
+            gc.collect()
             return segment.get_dict_obj()
         except Exception as e:
             print("Error in segment:")
             print(str(e))
             print(segment.get_dict_obj())
-            return {}
+            ds, vk = None, None
+            gc.collect()
+            return segment.get_dict_obj()
 
     def print_metrics(self, seg_list):
         max_seg_length = 0
