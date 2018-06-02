@@ -139,8 +139,8 @@ class Service:
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
         print("Breaking down audio into smaller chunks")
         web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
-        seg_list = list(self.chunks(web_rtcvad_helper.get_sr_segment_list(), 5))
-
+        seg_list = web_rtcvad_helper.get_sr_segment_list()
+        chunked_seg_list = list(self.chunks(seg_list, 5))
 
 
         self.print_metrics(list(itertools.chain.from_iterable(seg_list)))
@@ -151,14 +151,14 @@ class Service:
         print("processing multithreaded")
         start_time = time.time()
         results = []
-        self.segment_count = len(seg_list)
+        segment_count = len(seg_list)
         # num_consumers = multiprocessing.cpu_count()
         num_consumers = 2
         with concurrent.futures.ProcessPoolExecutor(max_workers=num_consumers) as executor:
 
             to_do = []
-            for segment in seg_list:
-                future = executor.submit(self.process_segment, segment, len(seg_list))
+            for segment in chunked_seg_list:
+                future = executor.submit(self.process_segment, segment, segment_count)
                 to_do.append(future)
             for future in concurrent.futures.as_completed(to_do):
                 result_temp = {"order":-1}
