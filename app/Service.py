@@ -70,9 +70,9 @@ class Service:
         start_time = time.time()
         results = []
         segment_count = len(seg_list)
-        num_consumers = multiprocessing.cpu_count()
-        # num_consumers = 2
-        with concurrent.futures.ThreadPoolExecutor(max_workers=num_consumers) as executor:
+        # num_consumers = multiprocessing.cpu_count()
+        num_consumers = 1
+        with concurrent.futures.ProcessPoolExecutor(max_workers=num_consumers) as executor:
 
             to_do = []
             for segments_chunk in chunked_seg_list:
