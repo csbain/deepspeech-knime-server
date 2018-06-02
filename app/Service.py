@@ -8,37 +8,43 @@ from OpenVokaturiImp import OpenVokaturiImp
 from TempFileHelper import TempFileHelper
 from WebRTCVADHelper import WebRTCVADHelper
 import gc
+import itertools
 import util
 
 class Service:
     segment_count = 0
 
-    def process_segment(self, segment, total_count):
+    def process_segment(self, segments_chunk, total_count):
 
         vk = OpenVokaturiImp()
         ds = DeepSpeechImp()
-        segment
-        try:
-            print("starting segment (processing emotion): " + str(segment.order)+"/"+str(self.segment_count))
-            segment.emotion = vk.analyse_audio(segment.path)
-            print(segment.emotion)
-            print("starting segment (processing speech): " + str(segment.order)+"/"+str(self.segment_count))
-            start_time = time.time()
-            segment.content = ds.process_audio(segment.path)
-            time_taken = (time.time() - start_time)
-            os.remove(segment.path)
-            print(segment.content)
-            print("finished segment: " + str(segment.order)+"/"+str(total_count) + ", duration length: "+ str(segment.duration) +", time taken: " + str(round(time_taken, 2)) +", duration/segment_lenght ratio: " + str(round(time_taken/segment.duration, 2)))
-            ds, vk = None, None
+        finished_segments = []
+        for segment in segments_chunk:
+
+            try:
+                print("starting segment (processing emotion): " + str(segment.order)+"/"+str(self.segment_count))
+                segment.emotion = vk.analyse_audio(segment.path)
+                print(segment.emotion)
+                print("starting segment (processing speech): " + str(segment.order)+"/"+str(self.segment_count))
+                start_time = time.time()
+                segment.content = ds.process_audio(segment.path)
+                time_taken = (time.time() - start_time)
+                os.remove(segment.path)
+                print(segment.content)
+                print("finished segment: " + str(segment.order)+"/"+str(total_count) + ", duration length: "+ str(segment.duration) +", time taken: " + str(round(time_taken, 2)) +", duration/segment_lenght ratio: " + str(round(time_taken/segment.duration, 2)))
+
+            except Exception as e:
+                print("Error in segment:")
+                print(str(e))
+                print(segment.get_dict_obj())
+            finally:
+                finished_segments.append(segment.get_dict_obj())
+            del vk
+            del ds
             gc.collect()
-            return segment.get_dict_obj()
-        except Exception as e:
-            print("Error in segment:")
-            print(str(e))
-            print(segment.get_dict_obj())
-            ds, vk = None, None
-            gc.collect()
-            return segment.get_dict_obj()
+            # return segment.get_dict_obj()
+            return finished_segments
+
 
     def print_metrics(self, seg_list):
         max_seg_length = 0
@@ -133,8 +139,11 @@ class Service:
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
         print("Breaking down audio into smaller chunks")
         web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
-        seg_list = web_rtcvad_helper.get_sr_segment_list()
-        self.print_metrics(seg_list)
+        seg_list = list(self.chunks(web_rtcvad_helper.get_sr_segment_list(), 5))
+
+
+
+        self.print_metrics(list(itertools.chain.from_iterable(seg_list)))
         web_rtcvad_helper = None
         audioutil = None
         bytes = None
@@ -143,7 +152,8 @@ class Service:
         start_time = time.time()
         results = []
         self.segment_count = len(seg_list)
-        num_consumers = multiprocessing.cpu_count()
+        # num_consumers = multiprocessing.cpu_count()
+        num_consumers = 2
         with concurrent.futures.ProcessPoolExecutor(max_workers=num_consumers) as executor:
 
             to_do = []
@@ -151,17 +161,17 @@ class Service:
                 future = executor.submit(self.process_segment, segment, len(seg_list))
                 to_do.append(future)
             for future in concurrent.futures.as_completed(to_do):
-                result_temp = {}
+                result_temp = {"order":-1}
                 try:
                     result_temp = future.result(timeout=120)
-                    results.append(result_temp)
                 except concurrent.futures.TimeoutError:
                     print("this took too long...")
                     future.interrupt()
+
                 except Exception as e:
                     print('error: ' + str(e))
                 finally:
-                    results.append(result_temp)
+                    results += result_temp
 
         time_taken = (time.time() - start_time)
         print("--- %s seconds ---\n\n" % time_taken)
@@ -169,6 +179,12 @@ class Service:
         results_sorted = sorted(results, key=lambda k: k['order'])
 
         return results_sorted
+
+    def chunks(self, l, n):
+        """Yield successive n-sized chunks from l."""
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
 
 
 if __name__ == "__main__":
