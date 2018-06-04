@@ -16,18 +16,18 @@ class Service:
         ds = DeepSpeechImp()
         finished_segments = []
         for segment in segments_chunk:
-
+            count = segment.order+1
             try:
-                print("starting segment (processing emotion): " + str(segment.order)+"/"+str(total_count))
+                print("starting segment (processing emotion): " + str(count)+"/"+str(total_count))
                 segment.emotion = vk.analyse_audio(segment.path)
                 print(segment.emotion)
-                print("starting segment (processing speech): " + str(segment.order)+"/"+str(total_count))
+                print("starting segment (processing speech): " + str(count)+"/"+str(total_count))
                 start_time = time.time()
                 segment.content = ds.process_audio(segment.path)
                 time_taken = (time.time() - start_time)
                 os.remove(segment.path)
                 print(segment.content)
-                print("finished segment: " + str(segment.order)+"/"+str(total_count) + ", duration length: "+ str(segment.duration) +", time taken: " + str(round(time_taken, 2)) +", duration/segment_lenght ratio: " + str(round(time_taken/segment.duration, 2)))
+                print("finished segment: " + str(count)+"/"+str(total_count) + ", duration length: "+ str(segment.duration) +", time taken: " + str(round(time_taken, 2)) +", duration/segment_lenght ratio: " + str(round(time_taken/segment.duration, 2)))
 
             except Exception as e:
                 print("Error in segment:")
@@ -62,17 +62,20 @@ class Service:
 
 
         self.print_metrics(seg_list)
-        web_rtcvad_helper = None
-        audioutil = None
-        bytes = None
+        del web_rtcvad_helper
+        del audioutil
+        del bytes
+        # web_rtcvad_helper = None
+        # audioutil = None
+        # bytes = None
         gc.collect()
         print("processing multithreaded")
         start_time = time.time()
         results = []
         segment_count = len(seg_list)
-        # num_consumers = multiprocessing.cpu_count()
-        num_consumers = 1
-        with concurrent.futures.ProcessPoolExecutor(max_workers=num_consumers) as executor:
+        num_consumers = multiprocessing.cpu_count()
+        # num_consumers = 2
+        with concurrent.futures.ThreadPoolExecutor(max_workers=num_consumers) as executor:
 
             to_do = []
             for segments_chunk in chunked_seg_list:
@@ -81,7 +84,7 @@ class Service:
             for future in concurrent.futures.as_completed(to_do):
                 result_temp = {"order":-1}
                 try:
-                    result_temp = future.result(timeout=120)
+                    result_temp = future.result(timeout=1200)
                 except concurrent.futures.TimeoutError:
                     print("this took too long...")
                     future.interrupt()
@@ -105,18 +108,18 @@ class Service:
 
 
 
-if __name__ == "__main__":
-    import sys
-    import re
-
-    # file = sys.argv[1]
-    file = "alice.mp3"
-    extensions = re.findall(r'\.([^.]+)', file)
-    service = Service()
-
-    with open(file, "rb") as in_file:
-
-        results = service.process_audio_multiprocessor(in_file.read(),extensions[0])
-        print(results)
-
-
+# if __name__ == "__main__":
+#     import sys
+#     import re
+#
+#     # file = sys.argv[1]
+#     file = "alice.mp3"
+#     extensions = re.findall(r'\.([^.]+)', file)
+#     service = Service()
+#
+#     with open(file, "rb") as in_file:
+#
+#         results = service.process_audio_multiprocessor(in_file.read(),extensions[0])
+#         print(results)
+#
+#

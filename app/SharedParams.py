@@ -2,7 +2,7 @@ SAMPLE_RATE = 16000  # SR for DeepSpeech and VAD (Deepspeech was trained on 1600
 
 DS_MODEL_BASE = "models/"
 
-DS_MODEL = DS_MODEL_BASE + "output_graph.pb"
+DS_MODEL = DS_MODEL_BASE + "output_graph.pbmm"
 DS_ALPHABET = DS_MODEL_BASE + "alphabet.txt"
 DS_TRIE = DS_MODEL_BASE + "trie"
 DS_LANGUAGE_MODEL = DS_MODEL_BASE + "lm.binary"
