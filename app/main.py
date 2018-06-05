@@ -1,11 +1,11 @@
 from flask import Flask, request, make_response, jsonify
-from Service import Service
+from Service4 import Service4
 
 app = Flask(__name__)
 
 ALLOWED_EXTENSIONS = set(['wav', 'mp3', 'flac', 'aiff', 'm4a', 'm4b', 'au', 'dvf', 'gsm', 'mmf',
                           'mpc', 'ogg', 'oga', 'mogg', 'opus', 'ra', 'rm', 'raw', 'vox', 'tta', 'wma', ' webm'])
-service = Service()
+service = Service4()
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 1 GB
 
 
@@ -34,7 +34,8 @@ def upload():
         if file and allowed_file(file.filename):
             ext = file.filename.rsplit('.', 1)[1].lower()
             bytes = file.read()
-            result = service.process_audio_multiprocessor(bytes, ext)
+            # result = service.process_audio_singlethreaded(bytes, ext)
+            result = service.process_audio(bytes, ext)
             return make_response(jsonify(result), 200)
 
 
