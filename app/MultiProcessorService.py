@@ -10,7 +10,7 @@ import gc
 import multiprocessing
 import math
 
-class Service4:
+class MultiProcessorService:
 
     def print_metrics(self, seg_list):
         max_seg_length = 0
@@ -26,19 +26,18 @@ class Service4:
         results = []
         segment_count = len(seg_list)
         for segment in seg_list:
-            count +=1
             try:
                 count = segment.order + 1
-                print("starting segment (processing emotion): " + str(count) + "/" + str(segment_count))
+                print("starting segment (processing emotion): " + str(count) + "/" + str(total_count))
                 segment.emotion = vk.analyse_audio(segment.path)
                 print(segment.emotion)
-                print("starting segment (processing speech): " + str(count) + "/" + str(segment_count))
+                print("starting segment (processing speech): " + str(count) + "/" + str(total_count))
                 start_time = time.time()
                 segment.content = ds.process_audio(segment.path)
                 time_taken = (time.time() - start_time)
                 os.remove(segment.path)
                 print(segment.content)
-                print("finished segment: " + str(count) + "/" + str(segment_count) + ", duration length: " + str(
+                print("finished segment: " + str(count) + "/" + str(total_count) + ", duration length: " + str(
                     segment.duration) + ", time taken: " + str(
                     round(time_taken, 2)) + ", duration/segment_lenght ratio: " + str(
                     round(time_taken / segment.duration, 2)))
@@ -52,13 +51,13 @@ class Service4:
         gc.collect()
         results_queue.put(results)
 
-    def process_audio(self, bytes, file_type):
+    def process_audio(self, bytes, file_type, vad_aggressiveness):
 
         temp_file_helper = TempFileHelper()
         print("Preprocessing audio from "+file_type+" format")
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
         print("Breaking down audio into smaller chunks")
-        web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
+        web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file(), vad_aggressiveness)
         seg_list = web_rtcvad_helper.get_sr_segment_list()
         self.print_metrics(seg_list)
         total_count = len(seg_list)

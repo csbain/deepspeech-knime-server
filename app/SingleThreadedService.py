@@ -8,7 +8,7 @@ from TempFileHelper import TempFileHelper
 from WebRTCVADHelper import WebRTCVADHelper
 import gc
 
-class Service3:
+class SingleThreadedService:
 
     def print_metrics(self, seg_list):
         max_seg_length = 0
@@ -18,14 +18,14 @@ class Service3:
         print("Number of segments to process: "+str(len(seg_list)))
         print("Longest duration of segment: "+str(max_seg_length))
 
-    def process_audio_singlethreaded(self, bytes, file_type):
+    def process_audio(self, bytes, file_type, vad_aggressiveness):
         vk = OpenVokaturiImp()
         ds = DeepSpeechImp()
         temp_file_helper = TempFileHelper()
         print("Preprocessing audio from "+file_type+" format")
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
         print("Breaking down audio into smaller chunks")
-        web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file())
+        web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file(), vad_aggressiveness)
         seg_list = web_rtcvad_helper.get_sr_segment_list()
         self.print_metrics(seg_list)
         del web_rtcvad_helper

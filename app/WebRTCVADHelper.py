@@ -13,8 +13,8 @@ class WebRTCVADHelper:
     sr_segment_count = 0
     sr_segment_list = []
 
-    def __init__(self, temp_file_helper, import_wav_path):
-        self.vad = webrtcvad.Vad(3)  # agressiveness
+    def __init__(self, temp_file_helper, import_wav_path, vad_aggressiveness):
+        self.vad = webrtcvad.Vad(vad_aggressiveness)  # agressiveness
         self.sample_rate = SharedParams.SAMPLE_RATE
         self.pcm_data = None
         self.temp_file_helper = temp_file_helper

@@ -24,8 +24,8 @@ jobs:
           command: |
             cd app && wget -O - \
             https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | \
-            tar xvfz -
-            wget -q https://s3-us-west-2.amazonaws.com/deepspeech/mmap/output_graph.pbmm -O app/models/output_graph.pbmm
+            tar xvfz - \
+            && wget -q https://s3-us-west-2.amazonaws.com/deepspeech/mmap/output_graph.pbmm -O models/output_graph.pbmm
 
       - restore_cache:
           keys:
