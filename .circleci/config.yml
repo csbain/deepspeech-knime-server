@@ -25,6 +25,9 @@ jobs:
             cd app && wget -O - \
             https://github.com/mozilla/DeepSpeech/releases/download/v0.1.1/deepspeech-0.1.1-models.tar.gz | \
             tar xvfz -
+      - run:
+          name: Download Deepspeech Memory Mapped model
+          command: |
             cd models && \
             wget -q https://s3-us-west-2.amazonaws.com/deepspeech/mmap/output_graph.pb -O output_graph.pb && \
             wget -q https://s3-us-west-2.amazonaws.com/deepspeech/mmap/output_graph.pbmm -O output_graph.pbmm
