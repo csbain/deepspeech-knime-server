@@ -73,8 +73,7 @@ class Service4:
 
         result_queue = multiprocessing.Queue()
         jobs = []
-        print(str(len(chunked_seg_list)))
-        exit()
+
         for seg_list_chunk in chunked_seg_list:
             p = multiprocessing.Process(target=self.process_segment_list_worker, args=(seg_list_chunk,total_count, result_queue))
             jobs.append(p)
