@@ -83,10 +83,11 @@ class MultiProcessorService:
         for p in jobs:
             results += result_queue.get()
         result_queue.close()
+        results_sorted = sorted(results, key=lambda k: k['order'])
         time_taken = (time.time() - start_time)
         print("--- %s seconds ---\n\n" % time_taken)
 
-        return results
+        return results_sorted
 
 
     def chunks(self, l, n):
