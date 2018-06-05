@@ -8,6 +8,7 @@ from TempFileHelper import TempFileHelper
 from WebRTCVADHelper import WebRTCVADHelper
 import gc
 import multiprocessing
+import math
 
 class Service4:
 
@@ -68,10 +69,12 @@ class Service4:
         print("processing single threaded")
         start_time = time.time()
         num_consumers = multiprocessing.cpu_count()
-        chunked_seg_list = list(self.chunks(seg_list, num_consumers))
+        chunked_seg_list = list(self.chunks(seg_list, math.ceil(len(seg_list)/num_consumers)))
 
         result_queue = multiprocessing.Queue()
         jobs = []
+        print(str(len(chunked_seg_list)))
+        exit()
         for seg_list_chunk in chunked_seg_list:
             p = multiprocessing.Process(target=self.process_segment_list_worker, args=(seg_list_chunk,total_count, result_queue))
             jobs.append(p)
