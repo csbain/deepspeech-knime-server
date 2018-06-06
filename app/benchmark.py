@@ -28,6 +28,7 @@ if __name__ == "__main__":
     benchmark = "multiprocessor_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark)
     p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.daemon = True
     p.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
@@ -42,6 +43,7 @@ if __name__ == "__main__":
     benchmark = "singlethreaded_vad0"
     logging.info("STARTING BENCHMARK: " + benchmark)
     p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.daemon = True
     p.start()
     bytes = get_file_bytes(file)
     service = SingleThreadedService()
@@ -57,6 +59,7 @@ if __name__ == "__main__":
     benchmark = "multiprocessor_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark)
     p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.daemon = True
     p.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
@@ -86,6 +89,7 @@ if __name__ == "__main__":
     benchmark = "multiprocessor_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark)
     p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.daemon = True
     p.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
@@ -115,6 +119,7 @@ if __name__ == "__main__":
     benchmark = "multiprocessor_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark)
     p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.daemon = True
     p.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
@@ -129,6 +134,7 @@ if __name__ == "__main__":
     benchmark = "singlethreaded_vad0"
     logging.info("STARTING BENCHMARK: " + benchmark)
     p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.daemon = True
     p.start()
     bytes = get_file_bytes(file)
     service = SingleThreadedService()
