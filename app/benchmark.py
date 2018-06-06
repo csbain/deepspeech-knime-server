@@ -29,7 +29,7 @@ if __name__ == "__main__":
     vad = 0
     benchmark = "multiprocessor_vad"+str(vad)
     logging.info("STARTING BENCHMARK: "+benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger(benchmark+".log"))
+    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark+".log"))
     t.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     benchmark = "singlethreaded_vad0"
     logging.info("STARTING BENCHMARK: "+benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger(benchmark+".log"))
+    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark+".log"))
     t.start()
     bytes = get_file_bytes(file)
     service = SingleThreadedService()
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     vad = 1
     benchmark = "multiprocessor_vad"+str(vad)
     logging.info("STARTING BENCHMARK: "+benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger(benchmark+".log"))
+    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark+".log"))
     t.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     benchmark = "singlethreaded_vad0"
     logging.info("STARTING BENCHMARK: "+benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger(benchmark+".log"))
+    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark+".log"))
     t.start()
     bytes = get_file_bytes(file)
     service = SingleThreadedService()
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     vad = 2
     benchmark = "multiprocessor_vad"+str(vad)
     logging.info("STARTING BENCHMARK: "+benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger(benchmark+".log"))
+    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark+".log"))
     t.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
     benchmark = "singlethreaded_vad0"
     logging.info("STARTING BENCHMARK: "+benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger(benchmark+".log"))
+    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark+".log"))
     t.start()
     bytes = get_file_bytes(file)
     service = SingleThreadedService()
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     vad = 3
     benchmark = "multiprocessor_vad"+str(vad)
     logging.info("STARTING BENCHMARK: "+benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger(benchmark+".log"))
+    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark+".log"))
     t.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
     benchmark = "singlethreaded_vad0"
     logging.info("STARTING BENCHMARK: "+benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger(benchmark+".log"))
+    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark+".log"))
     t.start()
     bytes = get_file_bytes(file)
     service = SingleThreadedService()

@@ -18,7 +18,9 @@ def logger(log_file=SharedParams.DEFAULT_METRICS_LOG_FILE):
         tmp_space = psutil.disk_usage('/tmp')['percent']
         cpu = psutil.cpu_percent(interval=1, percpu=True)
         processor_stats = ','.join(str(e) for e in cpu)
-        write_to_logfile(log_file, datetimestr+","+str(memory)+","+str(swap)+","+str(tmp_space)+","+str(processor_stats))
+        log_line = datetimestr+","+str(memory)+","+str(swap)+","+str(tmp_space)+","+str(processor_stats)
+        print(log_line)
+        write_to_logfile(log_file, log_line)
         time.sleep(30.0 - ((time.time() - starttime) % 30.0))
 
 def write_to_logfile(log_file, string):
