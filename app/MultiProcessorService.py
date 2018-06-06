@@ -1,16 +1,17 @@
-
-import time
+import gc
+import logging
+import math
+import multiprocessing
 import os
+import time
+
+import util
 from AudioUtils import AudioUtils
 from DeepSpeechImp import DeepSpeechImp
 from OpenVokaturiImp import OpenVokaturiImp
 from TempFileHelper import TempFileHelper
 from WebRTCVADHelper import WebRTCVADHelper
-import gc
-import multiprocessing
-import math
-import logging
-import util
+
 
 class MultiProcessorService:
 
@@ -19,8 +20,8 @@ class MultiProcessorService:
         for segment in seg_list:
             if segment.duration > max_seg_length:
                 max_seg_length = segment.duration
-        logging.info("Number of segments to process: "+str(len(seg_list)))
-        logging.info("Longest duration of segment: "+str(max_seg_length))
+        logging.info("Number of segments to process: " + str(len(seg_list)))
+        logging.info("Longest duration of segment: " + str(max_seg_length))
 
     def process_segment_list_worker(self, seg_list, total_count, results_queue):
         vk = OpenVokaturiImp()
@@ -53,7 +54,7 @@ class MultiProcessorService:
     def process_audio(self, bytes, file_type, vad_aggressiveness):
 
         temp_file_helper = TempFileHelper()
-        logging.info("Preprocessing audio from "+file_type+" format")
+        logging.info("Preprocessing audio from " + file_type + " format")
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
         logging.info("Breaking down audio into smaller chunks")
         web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file(), vad_aggressiveness)
@@ -66,11 +67,12 @@ class MultiProcessorService:
         gc.collect()
         process_start_time = time.time()
         num_consumers = multiprocessing.cpu_count()
-        chunked_seg_list = list(self.chunks(seg_list, math.ceil(len(seg_list)/num_consumers)))
+        chunked_seg_list = list(self.chunks(seg_list, math.ceil(len(seg_list) / num_consumers)))
         result_queue = multiprocessing.Queue()
         jobs = []
         for seg_list_chunk in chunked_seg_list:
-            p = multiprocessing.Process(target=self.process_segment_list_worker, args=(seg_list_chunk,total_count, result_queue))
+            p = multiprocessing.Process(target=self.process_segment_list_worker,
+                                        args=(seg_list_chunk, total_count, result_queue))
             jobs.append(p)
             p.start()
         for p in jobs:
@@ -83,7 +85,6 @@ class MultiProcessorService:
 
         logging.info("Total time elapsed: " + util.format_time_duration(process_start_time, time.time()))
         return results_sorted
-
 
     def chunks(self, l, n):
         """Yield successive n-sized chunks from l."""

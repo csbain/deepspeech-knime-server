@@ -52,7 +52,6 @@ class AudioUtils():
         self.wip_temp_audio_file = wip_audio_file
         return self
 
-
     def get_processed_file(self):
         return self.wip_temp_audio_file
 

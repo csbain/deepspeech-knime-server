@@ -1,7 +1,9 @@
-import scipy.io.wavfile
-from vokaturi import Vokaturi
-import platform
 import logging
+import platform
+import scipy.io.wavfile
+
+from vokaturi import Vokaturi
+
 
 class OpenVokaturiImp:
     def __init__(self):
