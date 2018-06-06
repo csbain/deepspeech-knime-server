@@ -9,6 +9,7 @@ from WebRTCVADHelper import WebRTCVADHelper
 import gc
 import multiprocessing
 import math
+import logging
 
 class MultiProcessorService:
 
@@ -17,34 +18,31 @@ class MultiProcessorService:
         for segment in seg_list:
             if segment.duration > max_seg_length:
                 max_seg_length = segment.duration
-        print("Number of segments to process: "+str(len(seg_list)))
-        print("Longest duration of segment: "+str(max_seg_length))
+        logging.info("Number of segments to process: "+str(len(seg_list)))
+        logging.info("Longest duration of segment: "+str(max_seg_length))
 
     def process_segment_list_worker(self, seg_list, total_count, results_queue):
         vk = OpenVokaturiImp()
         ds = DeepSpeechImp()
         results = []
-        segment_count = len(seg_list)
         for segment in seg_list:
             try:
                 count = segment.order + 1
-                print("starting segment (processing emotion): " + str(count) + "/" + str(total_count))
+                logging.info("starting segment (processing emotion): " + str(count) + "/" + str(total_count))
                 segment.emotion = vk.analyse_audio(segment.path)
-                print(segment.emotion)
-                print("starting segment (processing speech): " + str(count) + "/" + str(total_count))
+                logging.debug(segment.emotion)
+                logging.info("starting segment (processing speech): " + str(count) + "/" + str(total_count))
                 start_time = time.time()
                 segment.content = ds.process_audio(segment.path)
                 time_taken = (time.time() - start_time)
                 os.remove(segment.path)
-                print(segment.content)
-                print("finished segment: " + str(count) + "/" + str(total_count) + ", duration length: " + str(
+                logging.debug(segment.content)
+                logging.info("finished segment: " + str(count) + "/" + str(total_count) + ", duration length: " + str(
                     segment.duration) + ", time taken: " + str(
                     round(time_taken, 2)) + ", duration/segment_lenght ratio: " + str(
                     round(time_taken / segment.duration, 2)))
             except Exception as e:
-                print("Error in segment:")
-                print(str(e))
-                print(segment.get_dict_obj())
+                logging.error("Error in segment:\n" + str(e) + "\n" + segment.get_dict_obj())
             results.append(segment.get_dict_obj())
         del vk
         del ds
@@ -54,9 +52,9 @@ class MultiProcessorService:
     def process_audio(self, bytes, file_type, vad_aggressiveness):
 
         temp_file_helper = TempFileHelper()
-        print("Preprocessing audio from "+file_type+" format")
+        logging.info("Preprocessing audio from "+file_type+" format")
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
-        print("Breaking down audio into smaller chunks")
+        logging.info("Breaking down audio into smaller chunks")
         web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file(), vad_aggressiveness)
         seg_list = web_rtcvad_helper.get_sr_segment_list()
         self.print_metrics(seg_list)
@@ -65,14 +63,11 @@ class MultiProcessorService:
         del audioutil
         del bytes
         gc.collect()
-        print("processing single threaded")
         start_time = time.time()
         num_consumers = multiprocessing.cpu_count()
         chunked_seg_list = list(self.chunks(seg_list, math.ceil(len(seg_list)/num_consumers)))
-
         result_queue = multiprocessing.Queue()
         jobs = []
-
         for seg_list_chunk in chunked_seg_list:
             p = multiprocessing.Process(target=self.process_segment_list_worker, args=(seg_list_chunk,total_count, result_queue))
             jobs.append(p)
@@ -85,8 +80,7 @@ class MultiProcessorService:
         result_queue.close()
         results_sorted = sorted(results, key=lambda k: k['order'])
         time_taken = (time.time() - start_time)
-        print("--- %s seconds ---\n\n" % time_taken)
-
+        logging.info("--- %s seconds ---\n\n" % time_taken)
         return results_sorted
 
 

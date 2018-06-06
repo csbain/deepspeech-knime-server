@@ -1,5 +1,6 @@
 import os
 import tempfile
+import logging
 
 
 class TempFileHelper:
@@ -14,4 +15,5 @@ class TempFileHelper:
             file_name += "." + ext
         path = os.path.join(self.working_temp_folder.name, file_name)
         # print(path)
+        logging.debug("new tempfile generated: "+path)
         return path

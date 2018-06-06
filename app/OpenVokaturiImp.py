@@ -1,15 +1,16 @@
 import scipy.io.wavfile
 from vokaturi import Vokaturi
 import platform
+import logging
 
 class OpenVokaturiImp:
     def __init__(self):
-        print("Loading library...")
+        logging.info("Loading library...")
         if platform.machine().endswith('64'):
             Vokaturi.load("vokaturi/linux/OpenVokaturi-3-0-linux64.so")
         else:
             Vokaturi.load("vokaturi/linux/OpenVokaturi-3-0-linux32.so")
-        print("Analyzed by: %s" % Vokaturi.versionAndLicense())
+        logging.info("Analyzed by: %s" % Vokaturi.versionAndLicense())
 
     def analyse_audio(self, file_name):
         (sample_rate, samples) = scipy.io.wavfile.read(file_name)
@@ -32,5 +33,4 @@ class OpenVokaturiImp:
             "fear": emotionProbabilities.fear
         }
         voice.destroy()
-
         return emotion
