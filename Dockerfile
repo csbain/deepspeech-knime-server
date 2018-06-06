@@ -46,7 +46,8 @@ RUN pip3 --no-cache-dir install -U \
     simplejson \
     sox \
     tensorflow==1.6.0 \
-    webrtcvad
+    webrtcvad \
+    psutil
 
 COPY app /app
 WORKDIR /app

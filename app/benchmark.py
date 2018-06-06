@@ -1,7 +1,7 @@
 import logging
 import re
 import threading
-
+from multiprocessing import Process
 import metrics_logger
 from MultiProcessorService import MultiProcessorService
 from SingleThreadedService import SingleThreadedService
@@ -27,8 +27,8 @@ if __name__ == "__main__":
     vad = 0
     benchmark = "multiprocessor_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark + ".log",))
-    t.start()
+    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
     result = service.process_audio(bytes, extensions[0], vad)
@@ -36,13 +36,13 @@ if __name__ == "__main__":
     del bytes
     del service
     del result
-    t.join()
+    p.join()
     logging.info("ENDING BENCHMARK: " + benchmark)
 
     benchmark = "singlethreaded_vad0"
     logging.info("STARTING BENCHMARK: " + benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark + ".log",))
-    t.start()
+    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.start()
     bytes = get_file_bytes(file)
     service = SingleThreadedService()
     result = service.process_audio(bytes, extensions[0], vad)
@@ -50,14 +50,14 @@ if __name__ == "__main__":
     del bytes
     del service
     del result
-    t.join()
+    p.join()
     logging.info("ENDING BENCHMARK: " + benchmark)
 
     vad = 1
     benchmark = "multiprocessor_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark + ".log",))
-    t.start()
+    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
     result = service.process_audio(bytes, extensions[0], vad)
@@ -65,13 +65,13 @@ if __name__ == "__main__":
     del bytes
     del service
     del result
-    t.join()
+    p.join()
     logging.info("ENDING BENCHMARK: " + benchmark)
 
     benchmark = "singlethreaded_vad0"
     logging.info("STARTING BENCHMARK: " + benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark + ".log",))
-    t.start()
+    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.start()
     bytes = get_file_bytes(file)
     service = SingleThreadedService()
     result = service.process_audio(bytes, extensions[0], vad)
@@ -79,14 +79,14 @@ if __name__ == "__main__":
     del bytes
     del service
     del result
-    t.join()
+    p.join()
     logging.info("ENDING BENCHMARK: " + benchmark)
 
     vad = 2
     benchmark = "multiprocessor_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark + ".log",))
-    t.start()
+    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
     result = service.process_audio(bytes, extensions[0], vad)
@@ -94,13 +94,13 @@ if __name__ == "__main__":
     del bytes
     del service
     del result
-    t.join()
+    p.join()
     logging.info("ENDING BENCHMARK: " + benchmark)
 
     benchmark = "singlethreaded_vad0"
     logging.info("STARTING BENCHMARK: " + benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark + ".log",))
-    t.start()
+    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.start()
     bytes = get_file_bytes(file)
     service = SingleThreadedService()
     result = service.process_audio(bytes, extensions[0], vad)
@@ -108,14 +108,14 @@ if __name__ == "__main__":
     del bytes
     del service
     del result
-    t.join()
+    p.join()
     logging.info("ENDING BENCHMARK: " + benchmark)
 
     vad = 3
     benchmark = "multiprocessor_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark + ".log",))
-    t.start()
+    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.start()
     bytes = get_file_bytes(file)
     service = MultiProcessorService()
     result = service.process_audio(bytes, extensions[0], vad)
@@ -123,13 +123,13 @@ if __name__ == "__main__":
     del bytes
     del service
     del result
-    t.join()
+    p.join()
     logging.info("ENDING BENCHMARK: " + benchmark)
 
     benchmark = "singlethreaded_vad0"
     logging.info("STARTING BENCHMARK: " + benchmark)
-    t = threading.Thread(name='logger', target=metrics_logger.logger, args=(benchmark + ".log",))
-    t.start()
+    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    p.start()
     bytes = get_file_bytes(file)
     service = SingleThreadedService()
     result = service.process_audio(bytes, extensions[0], vad)
@@ -137,5 +137,5 @@ if __name__ == "__main__":
     del bytes
     del service
     del result
-    t.join()
+    p.join()
     logging.info("ENDING BENCHMARK: " + benchmark)
