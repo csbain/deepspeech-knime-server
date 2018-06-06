@@ -10,6 +10,8 @@ import gc
 import logging
 import util
 
+
+
 class SingleThreadedService:
 
     def print_metrics(self, seg_list):

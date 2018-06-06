@@ -49,7 +49,7 @@ def upload():
                 logging.error(error)
                 return throw_error_code(400, error)
             vad_aggressiveness = request.args.get('vad_aggressiveness', default = 1, type = int)
-            if vad_aggressiveness not in [1,2,3]:
+            if vad_aggressiveness not in [0,1,2,3]:
                 error = "vad_aggressiveness must be an integer between and including 1 and 3"
                 logging.error(error)
                 return throw_error_code(400, error)

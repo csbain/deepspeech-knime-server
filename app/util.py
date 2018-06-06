@@ -2,7 +2,6 @@ import contextlib
 import io
 import sys
 import logging
-import time
 
 
 @contextlib.contextmanager
@@ -26,3 +25,4 @@ def configure_logging(log_name):
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     ch.setFormatter(formatter)
     logger.addHandler(ch)
+

@@ -19,3 +19,6 @@ WORD_COUNT_WEIGHT = 1.00
 # Valid word insertion weight. This is used to lessen the word insertion penalty
 # when the inserted word is part of the vocabulary
 VALID_WORD_COUNT_WEIGHT = 1.00
+
+
+DEFAULT_METRICS_LOG_FILE = "metrics.log"
