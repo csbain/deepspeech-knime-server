@@ -8,6 +8,7 @@ from TempFileHelper import TempFileHelper
 from WebRTCVADHelper import WebRTCVADHelper
 import gc
 import logging
+import util
 
 class SingleThreadedService:
 
@@ -33,7 +34,7 @@ class SingleThreadedService:
         del audioutil
         del bytes
         gc.collect()
-        start_time = time.time()
+        process_start_time = time.time()
         results = []
         segment_count = len(seg_list)
         count = 0
@@ -65,8 +66,7 @@ class SingleThreadedService:
                 logging.error("Error in segment:\n" + str(e) + "\n" + segment.get_dict_obj())
             results.append(segment.get_dict_obj())
         results_sorted = sorted(results, key=lambda k: k['order'])
-        time_taken = (time.time() - start_time)
-        logging.info("--- %s seconds ---\n\n" % time_taken)
+        logging.info("Total time elapsed: " + util.format_time_duration(process_start_time, time.time()))
         return results_sorted
 
 

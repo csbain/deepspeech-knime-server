@@ -2,6 +2,8 @@ import contextlib
 import io
 import sys
 import logging
+import time
+
 
 @contextlib.contextmanager
 def nostdout():
@@ -10,6 +12,11 @@ def nostdout():
     yield
     sys.stdout = save_stdout
 
+
+def format_time_duration(start, end):
+    hours, rem = divmod(end - start, 3600)
+    minutes, seconds = divmod(rem, 60)
+    return "{:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
 
 def configure_logging(log_name):
     logger = logging.getLogger(log_name)

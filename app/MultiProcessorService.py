@@ -10,6 +10,7 @@ import gc
 import multiprocessing
 import math
 import logging
+import util
 
 class MultiProcessorService:
 
@@ -63,7 +64,7 @@ class MultiProcessorService:
         del audioutil
         del bytes
         gc.collect()
-        start_time = time.time()
+        process_start_time = time.time()
         num_consumers = multiprocessing.cpu_count()
         chunked_seg_list = list(self.chunks(seg_list, math.ceil(len(seg_list)/num_consumers)))
         result_queue = multiprocessing.Queue()
@@ -79,8 +80,8 @@ class MultiProcessorService:
             results += result_queue.get()
         result_queue.close()
         results_sorted = sorted(results, key=lambda k: k['order'])
-        time_taken = (time.time() - start_time)
-        logging.info("--- %s seconds ---\n\n" % time_taken)
+
+        logging.info("Total time elapsed: " + util.format_time_duration(process_start_time, time.time()))
         return results_sorted
 
 
