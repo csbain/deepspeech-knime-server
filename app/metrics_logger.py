@@ -14,10 +14,10 @@ def logger(log_file=SharedParams.DEFAULT_METRICS_LOG_FILE):
 
     while True:
         datetimestr = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        memory = psutil.virtual_memory()['percent']
-        swap = psutil.swap_memory()['percent']
-        tmp_space = psutil.disk_usage('/tmp')['percent']
-        cpu = psutil.cpu_percent(interval=1, percpu=True)
+        memory = psutil.virtual_memory().percent
+        swap = psutil.swap_memory().percent
+        tmp_space = psutil.disk_usage('/tmp').percent
+        cpu = psutil.cpu_percent(interval=None, percpu=True)
         processor_stats = ','.join(str(e) for e in cpu)
         log_line = datetimestr + "," + str(memory) + "," + str(swap) + "," + str(tmp_space) + "," + str(processor_stats)
         print(log_line)
