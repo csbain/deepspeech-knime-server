@@ -17,7 +17,7 @@ class TempFileHelper:
         file_name = next(tempfile._get_candidate_names())
         if ext:
             file_name += "." + ext
-        path = os.path.join(self.working_temp_folder.name, file_name)
+        path = os.path.join(self.working_temp_folder, file_name)
         # print(path)
         logging.debug("new tempfile generated: " + path)
         return path
