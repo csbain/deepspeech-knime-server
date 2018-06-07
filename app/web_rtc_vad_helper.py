@@ -17,7 +17,7 @@ class WebRTCVADHelper:
         self.vad = webrtcvad.Vad(vad_aggressiveness)  # agressiveness
         self.sample_rate = shared_params.SAMPLE_RATE
         self.pcm_data = None
-        self.temp_file_helper = tfh
+        self.tfh = tfh
 
         with contextlib.closing(wave.open(import_wav_path, 'rb')) as wf:
             num_channels = wf.getnchannels()
@@ -108,7 +108,7 @@ class WebRTCVADHelper:
         """Writes a .wav file.
         Takes path, PCM audio data, and sample rate.
         """
-        temp_filename = self.temp_file_helper.generate_temp_filename("wav")
+        tfh = self.tfh.generate_temp_filename("wav")
         duration = 0
         with contextlib.closing(wave.open(temp_filename, 'wb')) as wf:
             wf.setnchannels(1)

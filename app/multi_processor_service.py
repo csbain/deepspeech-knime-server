@@ -55,11 +55,11 @@ class MultiProcessorService:
 
     def process_audio(self, file_bytes, file_type, vad_aggressiveness):
 
-        temp_file_helper = TempFileHelper()
+        tfh = TempFileHelper()
         logging.info("Preprocessing audio from " + file_type + " format")
-        audioutil = AudioUtils(temp_file_helper, file_bytes, file_type)
+        audioutil = AudioUtils(tfh, file_bytes, file_type)
         logging.info("Breaking down audio into smaller chunks")
-        web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file(), vad_aggressiveness)
+        web_rtcvad_helper = WebRTCVADHelper(tfh, audioutil.get_processed_file(), vad_aggressiveness)
         seg_list = web_rtcvad_helper.get_sr_segment_list()
         self.print_metrics(seg_list)
         total_count = len(seg_list)
