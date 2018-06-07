@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip3 --no-cache-dir install -U \
     AudioSegment \
-    deepspeech==0.1.1 \
+    deepspeech==0.2.0a5 \
     enum34 \
     eyed3 \
     Flask \
