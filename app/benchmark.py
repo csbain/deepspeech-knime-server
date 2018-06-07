@@ -20,7 +20,7 @@ def get_file_bytes(filename):
 
 
 def write_results_to_file(filename, results):
-    with open(filename, 'wb') as outfile:
+    with open("results/"+filename, 'wb') as outfile:
         json.dump(results, outfile)
 
 
@@ -51,6 +51,9 @@ def run_simulation(vad, processing_type):
 if __name__ == "__main__":
     vads = [0,1,2,3]
     processing_types = ['multiprocessor','singlethreaded']
+
+    if not os.path.exists("results"):
+        os.makedirs("results")
 
     for vad in vads:
         for processing_type in processing_types:

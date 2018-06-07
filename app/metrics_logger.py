@@ -27,7 +27,7 @@ def logger(log_file=SharedParams.DEFAULT_METRICS_LOG_FILE):
 
 
 def write_to_logfile(log_file, string):
-    with open(log_file, "a+") as f:
+    with open("results/"+log_file, "a+") as f:
         f.write(string+"\r\n")
 
 
