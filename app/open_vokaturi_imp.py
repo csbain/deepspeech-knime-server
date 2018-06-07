@@ -34,7 +34,7 @@ class OpenVokaturiImp:
             "fear": emotionProbabilities.fear
         }
         voice.destroy()
+        del voice
+        del Vokaturi
         return emotion
 
-    def __del__(self):
-        Vokaturi.destroy()
