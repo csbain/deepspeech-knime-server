@@ -26,8 +26,8 @@ def logger(log_file=SharedParams.DEFAULT_METRICS_LOG_FILE):
 
 
 def write_to_logfile(log_file, string):
-    with open(log_file, "a") as log:
-        log.write(string+"\n")
+    with open(log_file, "a+") as f:
+        f.write(string+"\r\n")
 
 
 def delete_logfile_if_exists(log_file):
