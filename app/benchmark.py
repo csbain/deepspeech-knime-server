@@ -48,16 +48,18 @@ def run_simulation(vad, processing_type):
     del service
     del result
 
+
+vads = [0,1,2,3]
+processing_types = ['multiprocessor','singlethreaded']
+parser = argparse.ArgumentParser(description='Run benchmarks on Deepseech integration')
+parser.add_argument('-v', 'vad', choices=vads, required=True)
+parser.add_argument('-p', 'processing_type', choices=processing_types, required=True)
+args = parser.parse_args()
+
+
 if __name__ == "__main__":
 
-    vads = [0,1,2,3]
-    processing_types = ['multiprocessor','singlethreaded']
 
-    parser = argparse.ArgumentParser(description='Run benchmarks on Deepseech integration')
-    parser.add_argument('-v', 'vad', choices=vads, required=True)
-    parser.add_argument('-p', 'processing_type', choices=processing_types, required=True)
-
-    args = parser.parse_args()
 
 
     if not os.path.exists("results"):
