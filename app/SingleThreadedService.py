@@ -41,7 +41,7 @@ class SingleThreadedService:
         count = 0
         for segment in seg_list:
             count += 1
-            if count % 30 == 0:
+            if count % 20 == 0:
                 logging.info("restarting Deepspeech and OpenVokaturi to free up memory")
                 del vk
                 del ds
@@ -49,6 +49,7 @@ class SingleThreadedService:
                 vk = OpenVokaturiImp()
                 ds = DeepSpeechImp()
             try:
+                segment.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 count = segment.order + 1
                 logging.info("starting segment (processing emotion): " + str(count) + "/" + str(segment_count))
                 segment.emotion = vk.analyse_audio(segment.path)
@@ -63,6 +64,7 @@ class SingleThreadedService:
                     segment.duration) + ", time taken: " + str(
                     round(time_taken, 2)) + ", duration/segment_lenght ratio: " + str(
                     round(time_taken / segment.duration, 2)))
+                segment.end_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             except Exception as e:
                 logging.error("Error in segment:\n" + str(e) + "\n" + segment.get_dict_obj())
             results.append(segment.get_dict_obj())

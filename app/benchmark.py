@@ -6,6 +6,8 @@ import metrics_logger
 from MultiProcessorService import MultiProcessorService
 from SingleThreadedService import SingleThreadedService
 import logging
+import json
+
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
 
@@ -18,8 +20,9 @@ def get_file_bytes(filename):
 
 
 def write_results_to_file(filename, results):
-    with open(filename, "w") as log:
-        log.write(results)
+    with open(filename, 'wb') as outfile:
+        json.dump(results, outfile)
+
 
 def run_simulation(vad, processing_type):
     file = "alice.mp3"

@@ -11,6 +11,8 @@ class SRSegment:
         "anger": None,
         "fear": None,
     }
+    start_time = None
+    end_time = None
 
     def __init__(self, order, timestamp, duration, path):
         self.order = order
@@ -25,4 +27,6 @@ class SRSegment:
             "duration": self.duration,
             "content": self.content,
             "emotion": self.emotion,
+            "start_time": self.start_time,
+            "end_time": self.end_time
         }
