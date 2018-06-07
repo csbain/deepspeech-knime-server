@@ -108,7 +108,7 @@ class WebRTCVADHelper:
         """Writes a .wav file.
         Takes path, PCM audio data, and sample rate.
         """
-        tfh = self.tfh.generate_temp_filename("wav")
+        temp_filename = self.tfh.generate_temp_filename("wav")
         duration = 0
         with contextlib.closing(wave.open(temp_filename, 'wb')) as wf:
             wf.setnchannels(1)
