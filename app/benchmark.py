@@ -5,6 +5,9 @@ from single_threaded_service import SingleThreadedService
 import logging
 import json
 import os
+import gc
+import argparse
+
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
 
@@ -46,16 +49,26 @@ def run_simulation(vad, processing_type):
     del result
 
 if __name__ == "__main__":
+
     vads = [0,1,2,3]
     processing_types = ['multiprocessor','singlethreaded']
+
+    parser = argparse.ArgumentParser(description='Run benchmarks on Deepseech integration')
+    parser.add_argument('-v', 'vad', choices=vads, required=True)
+    parser.add_argument('-p', 'processing_type', choices=processing_types, required=True)
+
+    args = parser.parse_args()
+
 
     if not os.path.exists("results"):
         os.makedirs("results")
 
-    for vad in vads:
-        for processing_type in processing_types:
-            run_simulation(vad, processing_type)
+    run_simulation(args.vad, args.processing_type)
 
+    # for vad in vads:
+    #     for processing_type in processing_types:
+    #         run_simulation(vad, processing_type)
+    #         gc.collect()
 
 
     # p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))

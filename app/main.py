@@ -1,6 +1,6 @@
 import logging
 from flask import Flask, request, make_response, jsonify
-
+import gc
 
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
@@ -29,6 +29,7 @@ def main():
 
 @app.route('/upload', methods=['POST'])
 def upload():
+    gc.collect()
     if request.method == 'POST':
         if 'file' not in request.files:
             error = "No File Part"
@@ -62,7 +63,7 @@ def upload():
                 service = SingleThreadedService()
 
             result = service.process_audio(file_bytes, ext, vad_aggressiveness)
-
+            gc.collect()
             return make_response(jsonify(result), 200)
 
 
