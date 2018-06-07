@@ -47,7 +47,7 @@ class MultiProcessorService:
                     round(time_taken / segment.duration, 2)))
                 segment.end_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             except Exception as e:
-                logging.error("Error in segment:\n" + str(e) + "\n" + segment.get_dict_obj())
+                logging.error("Error in segment:\n" + str(e) + "\n" + str(segment.get_dict_obj()))
             results.append(segment.get_dict_obj())
         del vk
         del ds

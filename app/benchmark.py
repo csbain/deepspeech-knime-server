@@ -3,8 +3,7 @@ import re
 import threading
 from multiprocessing import Process
 import metrics_logger
-from MultiProcessorService import MultiProcessorService
-from SingleThreadedService import SingleThreadedService
+
 import logging
 import json
 import os
@@ -25,6 +24,8 @@ def write_results_to_file(filename, results):
 
 
 def run_simulation(vad, processing_type):
+    from MultiProcessorService import MultiProcessorService
+    from SingleThreadedService import SingleThreadedService
     file = "alice.mp3"
     benchmark_name = processing_type+"_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark_name)

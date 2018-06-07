@@ -1,8 +1,7 @@
 import logging
 from flask import Flask, request, make_response, jsonify
 
-from MultiProcessorService import MultiProcessorService
-from SingleThreadedService import SingleThreadedService
+
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
 
@@ -56,9 +55,11 @@ def upload():
                 return throw_error_code(400, error)
 
             if multiple_processes.upper() == "TRUE":
+                from MultiProcessorService import MultiProcessorService
                 service = MultiProcessorService()
                 result = service.process_audio(bytes, ext, vad_aggressiveness)
             else:
+                from SingleThreadedService import SingleThreadedService
                 service = SingleThreadedService()
                 result = service.process_audio(bytes, ext, vad_aggressiveness)
 
