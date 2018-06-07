@@ -11,8 +11,8 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(processName)-10s 
 
 def get_file_bytes(filename):
     with open(filename, "rb") as in_file:
-        bytes = in_file.read()
-    return bytes
+        file_bytes = in_file.read()
+    return file_bytes
 
 
 def write_results_to_file(filename, results):
@@ -25,7 +25,7 @@ def run_simulation(vad, processing_type):
     file = "alice.mp3"
     benchmark_name = processing_type+"_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark_name)
-    bytes = get_file_bytes(file)
+    file_bytes = get_file_bytes(file)
     # p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
     # p.daemon = True
     # p.start()
@@ -36,12 +36,12 @@ def run_simulation(vad, processing_type):
     else:
         service = SingleThreadedService()
 
-    result = service.process_audio(bytes, "mp3", vad)
+    result = service.process_audio(file_bytes, "mp3", vad)
     t.do_run = False
     t.join()
     write_results_to_file(benchmark_name + "_result.json", result)
     logging.info("ENDING BENCHMARK: " + benchmark_name)
-    del bytes
+    del file_bytes
     del service
     del result
 

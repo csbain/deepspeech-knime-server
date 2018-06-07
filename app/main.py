@@ -41,7 +41,7 @@ def upload():
             return throw_error_code(400, error)
         if file and allowed_file(file.filename):
             ext = file.filename.rsplit('.', 1)[1].lower()
-            audio_bytes = file.read()
+            file_bytes = file.read()
 
             multiple_processes = request.args.get('multiple_processes', default="FALSE", type=str)
             if multiple_processes.upper() not in ["TRUE", "FALSE"]:
@@ -61,7 +61,7 @@ def upload():
                 from single_threaded_service import SingleThreadedService
                 service = SingleThreadedService()
 
-            result = service.process_audio(audio_bytes, ext, vad_aggressiveness)
+            result = service.process_audio(file_bytes, ext, vad_aggressiveness)
 
             return make_response(jsonify(result), 200)
 

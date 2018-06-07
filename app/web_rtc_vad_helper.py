@@ -62,7 +62,7 @@ class WebRTCVADHelper:
 
         voiced_frames = []
         for frame in frames:
-            is_speech = vad.is_speech(frame.bytes, sample_rate)
+            is_speech = vad.is_speech(frame.file_bytes, sample_rate)
             if not triggered:
                 ring_buffer.append((frame, is_speech))
                 num_voiced = len([f for f, speech in ring_buffer if speech])
@@ -86,7 +86,7 @@ class WebRTCVADHelper:
                 if num_unvoiced > 0.9 * ring_buffer.maxlen:
                     # sys.stdout.write('-(%s)' % (frame.timestamp + frame.duration))
                     triggered = False
-                    temp_file_name, wav_duration = self.write_wave(b''.join([f.bytes for f in voiced_frames]))
+                    temp_file_name, wav_duration = self.write_wave(b''.join([f.file_bytes for f in voiced_frames]))
                     self.create_sr_segment(frame, temp_file_name, wav_duration)
                     ring_buffer.clear()
                     voiced_frames = []
@@ -94,7 +94,7 @@ class WebRTCVADHelper:
         # If we have any leftover voiced audio when we run out of input,
         # yield it.
         if voiced_frames:
-            temp_file_name, wav_duration = self.write_wave(b''.join([f.bytes for f in voiced_frames]))
+            temp_file_name, wav_duration = self.write_wave(b''.join([f.file_bytes for f in voiced_frames]))
             self.create_sr_segment(frame, temp_file_name, wav_duration)
 
     def create_sr_segment(self, frame, segment_file_name, segment_duration):
@@ -122,7 +122,7 @@ class WebRTCVADHelper:
 class Frame(object):
     """Represents a "frame" of audio data."""
 
-    def __init__(self, bytes, timestamp, duration):
-        self.bytes = bytes
+    def __init__(self, file_bytes, timestamp, duration):
+        self.file_bytes = file_bytes
         self.timestamp = timestamp
         self.duration = duration
