@@ -39,5 +39,5 @@ class DeepSpeechImp:
             fs, audio = wav.read(audio_path)
             return self.ds.stt(audio, fs)
         except Exception as ex:
-            print(str(ex))
+            logging.error(str(ex))
             return ""

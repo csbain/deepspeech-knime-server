@@ -5,11 +5,14 @@ from multiprocessing import Process
 import metrics_logger
 from MultiProcessorService import MultiProcessorService
 from SingleThreadedService import SingleThreadedService
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
 
 
 def get_file_bytes(filename):
     bytes = None
-    with open(file, "rb") as in_file:
+    with open(filename, "rb") as in_file:
         bytes = in_file.read()
     return bytes
 
@@ -18,130 +21,41 @@ def write_results_to_file(filename, results):
     with open(filename, "w") as log:
         log.write(results)
 
+def run_simulation(vad, processing_type):
+    file = "alice.mp3"
+    benchmark_name = processing_type+"_vad" + str(vad)
+    logging.info("STARTING BENCHMARK: " + benchmark_name)
+    bytes = get_file_bytes(file)
+    # p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    # p.daemon = True
+    # p.start()
+    t = threading.Thread(target=metrics_logger.logger, args=(benchmark_name + ".log",))
+    t.start()
+    if processing_type == "multiprocessor":
+        service = MultiProcessorService()
+        result = service.process_audio(bytes, "mp3", vad)
+    else:
+        service = SingleThreadedService()
+        result = service.process_audio(bytes, "mp3", vad)
+    t.join()
+    write_results_to_file(benchmark_name + "_result.json", result)
+    logging.info("ENDING BENCHMARK: " + benchmark_name)
+    del bytes
+    del service
+    del result
 
 if __name__ == "__main__":
-    sample_file = "alice.mp3"
-    file = "alice.mp3"
-    extensions = re.findall(r'\.([^.]+)', file)
+    vads = [0,1,2,3]
+    processing_types = ['singlethreaded','multiprocessor']
 
-    vad = 0
-    benchmark = "multiprocessor_vad" + str(vad)
-    logging.info("STARTING BENCHMARK: " + benchmark)
-    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
-    p.daemon = True
-    p.start()
-    bytes = get_file_bytes(file)
-    service = MultiProcessorService()
-    result = service.process_audio(bytes, extensions[0], vad)
-    write_results_to_file(benchmark + "_result.json", result)
-    del bytes
-    del service
-    del result
-    p.join()
-    logging.info("ENDING BENCHMARK: " + benchmark)
+    for vad in vads:
+        for processing_type in processing_types:
+            run_simulation(vad, processing_type)
 
-    benchmark = "singlethreaded_vad0"
-    logging.info("STARTING BENCHMARK: " + benchmark)
-    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
-    p.daemon = True
-    p.start()
-    bytes = get_file_bytes(file)
-    service = SingleThreadedService()
-    result = service.process_audio(bytes, extensions[0], vad)
-    write_results_to_file(benchmark + "_result.json", result)
-    del bytes
-    del service
-    del result
-    p.join()
-    logging.info("ENDING BENCHMARK: " + benchmark)
 
-    vad = 1
-    benchmark = "multiprocessor_vad" + str(vad)
-    logging.info("STARTING BENCHMARK: " + benchmark)
-    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
-    p.daemon = True
-    p.start()
-    bytes = get_file_bytes(file)
-    service = MultiProcessorService()
-    result = service.process_audio(bytes, extensions[0], vad)
-    write_results_to_file(benchmark + "_result.json", result)
-    del bytes
-    del service
-    del result
-    p.join()
-    logging.info("ENDING BENCHMARK: " + benchmark)
 
-    benchmark = "singlethreaded_vad0"
-    logging.info("STARTING BENCHMARK: " + benchmark)
-    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
-    p.start()
-    bytes = get_file_bytes(file)
-    service = SingleThreadedService()
-    result = service.process_audio(bytes, extensions[0], vad)
-    write_results_to_file(benchmark + "_result.json", result)
-    del bytes
-    del service
-    del result
-    p.join()
-    logging.info("ENDING BENCHMARK: " + benchmark)
+    # p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
+    # p.daemon = True
+    # p.start()
 
-    vad = 2
-    benchmark = "multiprocessor_vad" + str(vad)
-    logging.info("STARTING BENCHMARK: " + benchmark)
-    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
-    p.daemon = True
-    p.start()
-    bytes = get_file_bytes(file)
-    service = MultiProcessorService()
-    result = service.process_audio(bytes, extensions[0], vad)
-    write_results_to_file(benchmark + "_result.json", result)
-    del bytes
-    del service
-    del result
-    p.join()
-    logging.info("ENDING BENCHMARK: " + benchmark)
 
-    benchmark = "singlethreaded_vad0"
-    logging.info("STARTING BENCHMARK: " + benchmark)
-    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
-    p.start()
-    bytes = get_file_bytes(file)
-    service = SingleThreadedService()
-    result = service.process_audio(bytes, extensions[0], vad)
-    write_results_to_file(benchmark + "_result.json", result)
-    del bytes
-    del service
-    del result
-    p.join()
-    logging.info("ENDING BENCHMARK: " + benchmark)
-
-    vad = 3
-    benchmark = "multiprocessor_vad" + str(vad)
-    logging.info("STARTING BENCHMARK: " + benchmark)
-    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
-    p.daemon = True
-    p.start()
-    bytes = get_file_bytes(file)
-    service = MultiProcessorService()
-    result = service.process_audio(bytes, extensions[0], vad)
-    write_results_to_file(benchmark + "_result.json", result)
-    del bytes
-    del service
-    del result
-    p.join()
-    logging.info("ENDING BENCHMARK: " + benchmark)
-
-    benchmark = "singlethreaded_vad0"
-    logging.info("STARTING BENCHMARK: " + benchmark)
-    p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
-    p.daemon = True
-    p.start()
-    bytes = get_file_bytes(file)
-    service = SingleThreadedService()
-    result = service.process_audio(bytes, extensions[0], vad)
-    write_results_to_file(benchmark + "_result.json", result)
-    del bytes
-    del service
-    del result
-    p.join()
-    logging.info("ENDING BENCHMARK: " + benchmark)
