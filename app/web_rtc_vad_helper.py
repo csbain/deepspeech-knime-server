@@ -13,11 +13,11 @@ class WebRTCVADHelper:
     sr_segment_count = 0
     sr_segment_list = []
 
-    def __init__(self, temp_file_helper, import_wav_path, vad_aggressiveness):
+    def __init__(self, tfh, import_wav_path, vad_aggressiveness):
         self.vad = webrtcvad.Vad(vad_aggressiveness)  # agressiveness
         self.sample_rate = shared_params.SAMPLE_RATE
         self.pcm_data = None
-        self.temp_file_helper = temp_file_helper
+        self.temp_file_helper = tfh
 
         with contextlib.closing(wave.open(import_wav_path, 'rb')) as wf:
             num_channels = wf.getnchannels()

@@ -10,7 +10,6 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(processName)-10s 
 
 
 def get_file_bytes(filename):
-    bytes = None
     with open(filename, "rb") as in_file:
         bytes = in_file.read()
     return bytes

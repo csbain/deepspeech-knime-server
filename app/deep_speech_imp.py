@@ -41,3 +41,7 @@ class DeepSpeechImp:
         except Exception as ex:
             logging.error(str(ex))
             return ""
+
+    def __del__(self):
+        del self.ds
+

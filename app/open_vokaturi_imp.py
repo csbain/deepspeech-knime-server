@@ -35,3 +35,6 @@ class OpenVokaturiImp:
         }
         voice.destroy()
         return emotion
+
+    def __del__(self):
+        Vokaturi.destroy()

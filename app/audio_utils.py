@@ -3,7 +3,7 @@ import sox
 import webrtcvad
 
 
-class AudioUtils():
+class AudioUtils:
 
 
     def __init__(self, tfh, file_bytes, file_ext):

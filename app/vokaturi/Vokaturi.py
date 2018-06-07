@@ -28,6 +28,11 @@ class EmotionProbabilities(ctypes.Structure):
 
 _library = None
 
+def destroy():
+    if not _library is None:
+        del _library
+
+
 
 def load(path_to_Vokaturi_library):
     global _library

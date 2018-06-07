@@ -53,7 +53,7 @@ class MultiProcessorService:
         gc.collect()
         results_queue.put(results)
 
-    def process_audio(self, bytes, file_type, vad_aggressiveness):
+    def process_audio(self, audio_bytes, file_type, vad_aggressiveness):
 
         temp_file_helper = TempFileHelper()
         logging.info("Preprocessing audio from " + file_type + " format")
@@ -65,7 +65,7 @@ class MultiProcessorService:
         total_count = len(seg_list)
         del web_rtcvad_helper
         del audioutil
-        del bytes
+        del audio_bytes
         gc.collect()
         process_start_time = time.time()
         num_consumers = multiprocessing.cpu_count()
