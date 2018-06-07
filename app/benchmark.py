@@ -37,6 +37,7 @@ def run_simulation(vad, processing_type):
     else:
         service = SingleThreadedService()
         result = service.process_audio(bytes, "mp3", vad)
+    t.do_run = False
     t.join()
     write_results_to_file(benchmark_name + "_result.json", result)
     logging.info("ENDING BENCHMARK: " + benchmark_name)
@@ -46,7 +47,7 @@ def run_simulation(vad, processing_type):
 
 if __name__ == "__main__":
     vads = [0,1,2,3]
-    processing_types = ['singlethreaded','multiprocessor']
+    processing_types = ['multiprocessor','singlethreaded']
 
     for vad in vads:
         for processing_type in processing_types:
