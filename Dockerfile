@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip3 --no-cache-dir install -U \
     AudioSegment \
-    deepspeech==0.2.0a5 \
+    deepspeech==0.1.1 \
     enum34 \
     eyed3 \
     Flask \
@@ -45,7 +45,7 @@ RUN pip3 --no-cache-dir install -U \
     setuptools \
     simplejson \
     sox \
-    tensorflow==1.6.0 \
+    tensorflow==1.8.0 \
     webrtcvad \
     psutil
 
