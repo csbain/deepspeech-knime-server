@@ -4,16 +4,10 @@ import webrtcvad
 
 
 class AudioUtils():
-    main_temp_audio_file = None
-    wip_temp_audio_file = None
-    main_temp_audio_16khz_file = None
-    vad = None
-    split_audio_files = []
-    working_temp_folder = None
-    temp_file_helper = None
 
-    def __init__(self, temp_file_helper, file_bytes, file_ext):
-        self.temp_file_helper = temp_file_helper
+
+    def __init__(self, tfh, file_bytes, file_ext):
+        self.temp_file_helper = tfh
         self.vad = webrtcvad.Vad()
         self.main_temp_audio_file = self.temp_file_helper.generate_temp_filename(file_ext)
         self.wip_temp_audio_file = self.temp_file_helper.generate_temp_filename("wav")
