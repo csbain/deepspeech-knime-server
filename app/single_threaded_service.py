@@ -3,13 +3,12 @@ import logging
 import os
 import datetime
 import time
-
 import util
-from AudioUtils import AudioUtils
-from DeepSpeechImp import DeepSpeechImp
-from OpenVokaturiImp import OpenVokaturiImp
-import TempFileHelper
-from WebRTCVADHelper import WebRTCVADHelper
+import audio_utils
+import deep_speech_imp
+import open_vokaturi_imp
+import temp_file_helper
+import web_rtc_vad_helper
 
 
 class SingleThreadedService:
@@ -23,13 +22,13 @@ class SingleThreadedService:
         logging.info("Longest duration of segment: " + str(max_seg_length))
 
     def process_audio(self, bytes, file_type, vad_aggressiveness):
-        vk = OpenVokaturiImp()
-        ds = DeepSpeechImp()
-        temp_file_helper = TempFileHelper.TempFileHelper()
+        vk = open_vokaturi_imp.OpenVokaturiImp()
+        ds = deep_speech_imp.DeepSpeechImp()
+        temp_file_helper = temp_file_helper.TempFileHelper()
         logging.info("Preprocessing audio from " + file_type + " format")
-        audioutil = AudioUtils(temp_file_helper, bytes, file_type)
+        audioutil = audio_utils.AudioUtils(temp_file_helper, bytes, file_type)
         logging.info("Breaking down audio into smaller chunks")
-        web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file(), vad_aggressiveness)
+        web_rtcvad_helper = web_rtc_vad_helper.WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file(), vad_aggressiveness)
         seg_list = web_rtcvad_helper.get_sr_segment_list()
         self.print_metrics(seg_list)
         del web_rtcvad_helper
@@ -47,8 +46,8 @@ class SingleThreadedService:
                 del vk
                 del ds
                 gc.collect()
-                vk = OpenVokaturiImp()
-                ds = DeepSpeechImp()
+                vk = open_vokaturi_imp()
+                ds = deep_speech_imp()
             try:
                 segment.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 count = segment.order + 1

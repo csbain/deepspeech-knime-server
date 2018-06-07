@@ -1,7 +1,6 @@
 import logging
 import platform
 import scipy.io.wavfile
-
 from vokaturi import Vokaturi
 
 

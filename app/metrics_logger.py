@@ -3,11 +3,10 @@ import time
 import os
 import psutil
 import threading
+import shared_params
 
-import SharedParams
 
-
-def logger(log_file=SharedParams.DEFAULT_METRICS_LOG_FILE):
+def logger(log_file=shared_params.DEFAULT_METRICS_LOG_FILE):
     delete_logfile_if_exists(log_file)
     headings = "datetime,free_mem,free_swap,free_tmp_part,free_cpu"
     write_to_logfile(log_file, headings)

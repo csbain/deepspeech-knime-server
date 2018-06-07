@@ -2,9 +2,8 @@ import collections
 import contextlib
 import wave
 import webrtcvad
-
-import SharedParams
-from SRSegment import SRSegment
+import shared_params
+import srs_segment
 
 
 class WebRTCVADHelper:
@@ -16,7 +15,7 @@ class WebRTCVADHelper:
 
     def __init__(self, temp_file_helper, import_wav_path, vad_aggressiveness):
         self.vad = webrtcvad.Vad(vad_aggressiveness)  # agressiveness
-        self.sample_rate = SharedParams.SAMPLE_RATE
+        self.sample_rate = shared_params.SAMPLE_RATE
         self.pcm_data = None
         self.temp_file_helper = temp_file_helper
 
@@ -100,8 +99,8 @@ class WebRTCVADHelper:
 
     def create_sr_segment(self, frame, segment_file_name, segment_duration):
 
-        srsegment = SRSegment(self.sr_segment_count, frame.timestamp - segment_duration,
-                              segment_duration, segment_file_name)
+        srsegment = srs_segment.SRSegment(self.sr_segment_count, frame.timestamp - segment_duration,
+                                          segment_duration, segment_file_name)
         self.sr_segment_list.append(srsegment)
         self.sr_segment_count += 1
 

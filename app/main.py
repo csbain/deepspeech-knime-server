@@ -55,10 +55,10 @@ def upload():
                 return throw_error_code(400, error)
 
             if multiple_processes.upper() == "TRUE":
-                from MultiProcessorService import MultiProcessorService
+                from multi_processor_service import MultiProcessorService
                 service = MultiProcessorService()
             else:
-                from SingleThreadedService import SingleThreadedService
+                from single_threaded_service import SingleThreadedService
                 service = SingleThreadedService()
 
             result = service.process_audio(bytes, ext, vad_aggressiveness)
