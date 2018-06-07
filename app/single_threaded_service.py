@@ -7,7 +7,7 @@ import util
 import audio_utils
 import deep_speech_imp
 import open_vokaturi_imp
-import temp_file_helper
+from temp_file_helper import TempFileHelper
 import web_rtc_vad_helper
 
 
@@ -24,7 +24,7 @@ class SingleThreadedService:
     def process_audio(self, bytes, file_type, vad_aggressiveness):
         vk = open_vokaturi_imp.OpenVokaturiImp()
         ds = deep_speech_imp.DeepSpeechImp()
-        temp_file_helper = temp_file_helper.TempFileHelper()
+        temp_file_helper = TempFileHelper()
         logging.info("Preprocessing audio from " + file_type + " format")
         audioutil = audio_utils.AudioUtils(temp_file_helper, bytes, file_type)
         logging.info("Breaking down audio into smaller chunks")

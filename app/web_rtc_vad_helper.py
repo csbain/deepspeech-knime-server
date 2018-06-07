@@ -3,7 +3,7 @@ import contextlib
 import wave
 import webrtcvad
 import shared_params
-import srs_segment
+from srs_segment import SRSegment
 
 
 class WebRTCVADHelper:
@@ -99,7 +99,7 @@ class WebRTCVADHelper:
 
     def create_sr_segment(self, frame, segment_file_name, segment_duration):
 
-        srsegment = srs_segment.SRSegment(self.sr_segment_count, frame.timestamp - segment_duration,
+        srsegment = SRSegment(self.sr_segment_count, frame.timestamp - segment_duration,
                                           segment_duration, segment_file_name)
         self.sr_segment_list.append(srsegment)
         self.sr_segment_count += 1

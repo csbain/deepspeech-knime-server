@@ -1,7 +1,7 @@
 import threading
 import metrics_logger
-import multi_processor_service
-import single_threaded_service
+from multi_processor_service import MultiProcessorService
+from single_threaded_service import SingleThreadedService
 import logging
 import json
 import os
@@ -33,9 +33,9 @@ def run_simulation(vad, processing_type):
     t = threading.Thread(target=metrics_logger.logger, args=(benchmark_name + ".log",))
     t.start()
     if processing_type == "multiprocessor":
-        service = multi_processor_service.MultiProcessorService()
+        service = MultiProcessorService()
     else:
-        service = single_threaded_service.SingleThreadedService()
+        service = SingleThreadedService()
 
     result = service.process_audio(bytes, "mp3", vad)
     t.do_run = False

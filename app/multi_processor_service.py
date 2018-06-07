@@ -6,11 +6,11 @@ import os
 import datetime
 import time
 import util
-import audio_utils
-import deep_speech_imp
-import open_vokaturi_imp
-import temp_file_helper
-import web_rtc_vad_helper
+from audio_utils import AudioUtils
+from deep_speech_imp import DeepSpeechImp
+from open_vokaturi_imp import OpenVokaturiImp
+from temp_file_helper import TempFileHelper
+from web_rtc_vad_helper import WebRTCVADHelper
 
 
 class MultiProcessorService:
@@ -24,8 +24,8 @@ class MultiProcessorService:
         logging.info("Longest duration of segment: " + str(max_seg_length))
 
     def process_segment_list_worker(self, seg_list, total_count, results_queue):
-        vk = open_vokaturi_imp.OpenVokaturiImp()
-        ds = deep_speech_imp.DeepSpeechImp()
+        vk = OpenVokaturiImp()
+        ds = DeepSpeechImp()
         results = []
         for segment in seg_list:
             try:
@@ -55,11 +55,11 @@ class MultiProcessorService:
 
     def process_audio(self, bytes, file_type, vad_aggressiveness):
 
-        temp_file_helper = temp_file_helper.TempFileHelper()
+        temp_file_helper = TempFileHelper()
         logging.info("Preprocessing audio from " + file_type + " format")
-        audioutil = audio_utils.AudioUtils(temp_file_helper, bytes, file_type)
+        audioutil = AudioUtils(temp_file_helper, bytes, file_type)
         logging.info("Breaking down audio into smaller chunks")
-        web_rtcvad_helper = web_rtc_vad_helper.WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file(), vad_aggressiveness)
+        web_rtcvad_helper = WebRTCVADHelper(temp_file_helper, audioutil.get_processed_file(), vad_aggressiveness)
         seg_list = web_rtcvad_helper.get_sr_segment_list()
         self.print_metrics(seg_list)
         total_count = len(seg_list)
