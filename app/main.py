@@ -57,13 +57,11 @@ def upload():
             if multiple_processes.upper() == "TRUE":
                 from MultiProcessorService import MultiProcessorService
                 service = MultiProcessorService()
-                result = service.process_audio(bytes, ext, vad_aggressiveness)
             else:
                 from SingleThreadedService import SingleThreadedService
                 service = SingleThreadedService()
-                result = service.process_audio(bytes, ext, vad_aggressiveness)
 
-            # result = service.process_audio_singlethreaded(bytes, ext)
+            result = service.process_audio(bytes, ext, vad_aggressiveness)
 
             return make_response(jsonify(result), 200)
 

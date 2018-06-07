@@ -3,7 +3,8 @@ import re
 import threading
 from multiprocessing import Process
 import metrics_logger
-
+import MultiProcessorService
+import SingleThreadedService
 import logging
 import json
 import os
@@ -24,8 +25,7 @@ def write_results_to_file(filename, results):
 
 
 def run_simulation(vad, processing_type):
-    from MultiProcessorService import MultiProcessorService
-    from SingleThreadedService import SingleThreadedService
+
     file = "alice.mp3"
     benchmark_name = processing_type+"_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark_name)
@@ -36,11 +36,11 @@ def run_simulation(vad, processing_type):
     t = threading.Thread(target=metrics_logger.logger, args=(benchmark_name + ".log",))
     t.start()
     if processing_type == "multiprocessor":
-        service = MultiProcessorService()
-        result = service.process_audio(bytes, "mp3", vad)
+        service = MultiProcessorService.MultiProcessorService()
     else:
-        service = SingleThreadedService()
-        result = service.process_audio(bytes, "mp3", vad)
+        service = SingleThreadedService.SingleThreadedService()
+
+    result = service.process_audio(bytes, "mp3", vad)
     t.do_run = False
     t.join()
     write_results_to_file(benchmark_name + "_result.json", result)

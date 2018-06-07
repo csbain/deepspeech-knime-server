@@ -10,7 +10,7 @@ import util
 from AudioUtils import AudioUtils
 from DeepSpeechImp import DeepSpeechImp
 from OpenVokaturiImp import OpenVokaturiImp
-from TempFileHelper import TempFileHelper
+import TempFileHelper
 from WebRTCVADHelper import WebRTCVADHelper
 
 
@@ -56,7 +56,7 @@ class MultiProcessorService:
 
     def process_audio(self, bytes, file_type, vad_aggressiveness):
 
-        temp_file_helper = TempFileHelper()
+        temp_file_helper = TempFileHelper.TempFileHelper()
         logging.info("Preprocessing audio from " + file_type + " format")
         audioutil = AudioUtils(temp_file_helper, bytes, file_type)
         logging.info("Breaking down audio into smaller chunks")
