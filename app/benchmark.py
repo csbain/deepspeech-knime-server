@@ -20,7 +20,7 @@ def get_file_bytes(filename):
 
 
 def write_results_to_file(filename, results):
-    with open("results/"+filename, 'wb') as outfile:
+    with open("results/"+filename, 'w') as outfile:
         json.dump(results, outfile)
 
 
