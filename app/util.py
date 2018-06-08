@@ -3,6 +3,7 @@ import multiprocessing
 import time
 import subprocess, os, signal, sys
 import signal, psutil
+import os
 
 def format_time_duration(start, end):
     hours, rem = divmod(end - start, 3600)
@@ -21,7 +22,8 @@ def configure_logging(log_name):
 
 
 def restart_flask_server():
-    os.system('kill %d' % os.getpid())
+    os._exit(1)
+
 
 
 def is_request_underway():

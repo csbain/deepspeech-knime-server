@@ -2,7 +2,8 @@ import logging
 from flask import Flask, request, make_response, jsonify
 import gc
 import util
-
+from multi_processor_service import MultiProcessorService
+from single_threaded_service import SingleThreadedService
 
 request_in_progress = 0
 
@@ -57,8 +58,8 @@ def upload():
             ext = file.filename.rsplit('.', 1)[1].lower()
             file_bytes = file.read()
 
-            multiple_processes = request.args.get('multiple_processes', default="FALSE", type=str)
-            if multiple_processes.upper() not in ["TRUE", "FALSE"]:
+            multiple_processes = request.args.get('multiple_processes', default="FALSE", type=str).upper()
+            if multiple_processes not in ["TRUE", "FALSE"]:
                 error = "multiple_processes must either be true, false (defaults to false)"
                 logging.error(error)
                 return throw_error_code(400, error)
@@ -68,13 +69,10 @@ def upload():
                 logging.error(error)
                 return throw_error_code(400, error)
 
-            if multiple_processes.upper() == "TRUE":
-                from multi_processor_service import MultiProcessorService
+            if multiple_processes == "TRUE":
                 service = MultiProcessorService()
-            else:
-                from single_threaded_service import SingleThreadedService
+            elif multiple_processes == "FALSE":
                 service = SingleThreadedService()
-
             result = service.process_audio(file_bytes, ext, vad_aggressiveness)
             gc.collect()
             return make_response(jsonify(result), 200)
