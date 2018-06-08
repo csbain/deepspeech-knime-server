@@ -17,12 +17,12 @@ def logger(log_file=shared_params.DEFAULT_METRICS_LOG_FILE):
         memory = psutil.virtual_memory().percent
         swap = psutil.swap_memory().percent
         tmp_space = psutil.disk_usage('/tmp').percent
-        cpu = psutil.cpu_percent(interval=None, percpu=True)
+        cpu = psutil.cpu_percent(interval=1, percpu=True)
         processor_stats = ','.join(str(e) for e in cpu)
         log_line = datetimestr + "," + str(memory) + "," + str(swap) + "," + str(tmp_space) + "," + str(processor_stats)
         # print(log_line)
         write_to_logfile(log_file, log_line)
-        time.sleep(10.0 - ((time.time() - starttime) % 10.0))
+        time.sleep(5.0 - ((time.time() - starttime) % 5.0))
 
 
 def write_to_logfile(log_file, string):

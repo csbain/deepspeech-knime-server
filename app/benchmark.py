@@ -52,25 +52,24 @@ def run_simulation(vad, processing_type):
 vads = [0,1,2,3]
 processing_types = ['multiprocessor','singlethreaded']
 parser = argparse.ArgumentParser(description='Run benchmarks on Deepseech integration')
-parser.add_argument('-v', '--vad', choices=vads, type=int, required=True)
-parser.add_argument('-p', '--processing_type', choices=processing_types, required=True)
+parser.add_argument('-v', '--vad', choices=vads, type=int)
+parser.add_argument('-p', '--processing_type', choices=processing_types)
 args = parser.parse_args()
 
 
 if __name__ == "__main__":
 
 
-
-
     if not os.path.exists("results"):
         os.makedirs("results")
 
-    run_simulation(args.vad, args.processing_type)
-
-    # for vad in vads:
-    #     for processing_type in processing_types:
-    #         run_simulation(vad, processing_type)
-    #         gc.collect()
+    if hasattr(args, 'results') and hasattr(args, 'processing_type'):
+        run_simulation(args.vad, args.processing_type)
+    else:
+        for vad in vads:
+            for processing_type in processing_types:
+                run_simulation(vad, processing_type)
+                gc.collect()
 
 
     # p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
