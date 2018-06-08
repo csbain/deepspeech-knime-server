@@ -3,7 +3,7 @@ import multiprocessing
 import time
 import subprocess, os, signal, sys
 import signal, psutil
-import os
+import sys
 
 def format_time_duration(start, end):
     hours, rem = divmod(end - start, 3600)
@@ -22,7 +22,7 @@ def configure_logging(log_name):
 
 
 def restart_flask_server():
-    os._exit(1)
+    sys.exit("Forced exit via web app")
 
 
 
