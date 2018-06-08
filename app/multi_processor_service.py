@@ -80,8 +80,10 @@ class MultiProcessorService:
         for p in jobs:
             p.join()
         results = []
-        for p in jobs:
+        for count in range(len(jobs)):
+            logging.info("Getting results from queue job"+str(count+1))
             results += result_queue.get()
+            logging.info("Results gained from item queue job "+str(count+1))
         result_queue.close()
         results_sorted = sorted(results, key=lambda k: k['order'])
 
