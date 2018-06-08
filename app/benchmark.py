@@ -64,13 +64,8 @@ if __name__ == "__main__":
     if not os.path.exists("results"):
         os.makedirs("results")
 
-    if hasattr(args, 'results') and hasattr(args, 'processing_type'):
-        run_simulation(args.vad, args.processing_type)
-    else:
-        for vad in vads:
-            for processing_type in processing_types:
-                run_simulation(vad, processing_type)
-                gc.collect()
+    run_simulation(args.vad, args.processing_type)
+
 
 
     # p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
