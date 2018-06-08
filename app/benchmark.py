@@ -52,8 +52,8 @@ def run_simulation(vad, processing_type):
 vads = [0,1,2,3]
 processing_types = ['multiprocessor','singlethreaded']
 parser = argparse.ArgumentParser(description='Run benchmarks on Deepseech integration')
-parser.add_argument('-v', '--vad', choices=vads, type=int)
-parser.add_argument('-p', '--processing_type', choices=processing_types)
+parser.add_argument('-v', '--vad', choices=vads, type=int, required=True)
+parser.add_argument('-p', '--processing_type', choices=processing_types, required=True)
 args = parser.parse_args()
 
 
