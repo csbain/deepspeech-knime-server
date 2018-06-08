@@ -4,7 +4,7 @@ import os
 import psutil
 import threading
 import shared_params
-
+import logging
 
 def logger(log_file=shared_params.DEFAULT_METRICS_LOG_FILE):
     delete_logfile_if_exists(log_file)
@@ -20,6 +20,7 @@ def logger(log_file=shared_params.DEFAULT_METRICS_LOG_FILE):
         cpu = psutil.cpu_percent(interval=1, percpu=True)
         processor_stats = ','.join(str(e) for e in cpu)
         log_line = datetimestr + "," + str(memory) + "," + str(swap) + "," + str(tmp_space) + "," + str(processor_stats)
+        logging.debug(log_line)
         # print(log_line)
         write_to_logfile(log_file, log_line)
         time.sleep(5.0 - ((time.time() - starttime) % 5.0))
