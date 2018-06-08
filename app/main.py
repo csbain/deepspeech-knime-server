@@ -1,7 +1,10 @@
 import logging
 from flask import Flask, request, make_response, jsonify
 import gc
+import util
 
+
+request_in_progress = 0
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
 
@@ -22,15 +25,25 @@ def throw_error_code(error_code, error_statement="error"):
     return make_response(error_statement, error_code)
 
 
+
+
 @app.route('/', methods=['GET'])
 def main():
     return make_response("Service Running OK", 200)
 
+@app.route('/restart', methods=['GET'])
+def restart():
+    util.restart_flask_server()
+    return make_response("Service restarted", 200)
 
-@app.route('/upload', methods=['POST'])
+
+@app.route('/process', methods=['POST'])
 def upload():
     gc.collect()
     if request.method == 'POST':
+        if util.is_request_underway():
+            return throw_error_code(429, "Maximum of one request is permitted at any given time.")
+
         if 'file' not in request.files:
             error = "No File Part"
             logging.error(error)

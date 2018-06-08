@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
     tar \
     unzip \
     wget \
+    supervisor \
  && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 --no-cache-dir install -U \
@@ -50,7 +51,9 @@ RUN pip3 --no-cache-dir install -U \
     psutil
 
 COPY app /app
-WORKDIR /app
-EXPOSE 5000
-ENTRYPOINT ["python3"]
-CMD ["main.py"]
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+
+
+WORKDIR /etc/supervisor/conf.d
+EXPOSE 5000 9001
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
