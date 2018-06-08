@@ -21,17 +21,7 @@ def configure_logging(log_name):
 
 
 def restart_flask_server():
-    signal.signal(signal.SIGTERM, kill_child_processes)
-
-
-def kill_child_processes(signum, frame):
-        parent_id = os.getpid()
-        ps_command = subprocess.Popen("ps -o pid --ppid %d --noheaders" % parent_id, shell=True, stdout=subprocess.PIPE)
-        ps_output = ps_command.stdout.read()
-        retcode = ps_command.wait()
-        for pid_str in ps_output.strip().split("\n")[:-1]:
-            os.kill(int(pid_str), signal.SIGTERM)
-        sys.exit()
+    os.system('kill %d' % os.getpid())
 
 
 def is_request_underway():
