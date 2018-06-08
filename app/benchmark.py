@@ -37,9 +37,8 @@ def run_simulation(vad, processing_type):
     t.start()
     if processing_type == "multiprocessor":
         service = MultiProcessorService()
-    else:
+    elif processing_type == "singlethreaded":
         service = SingleThreadedService()
-
     result = service.process_audio(file_bytes, "mp3", vad)
     t.do_run = False
     t.join()
