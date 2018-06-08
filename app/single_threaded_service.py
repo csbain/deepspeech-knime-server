@@ -41,13 +41,13 @@ class SingleThreadedService:
         count = 0
         for segment in seg_list:
             count += 1
-            if count % 20 == 0:
-                logging.info("restarting Deepspeech and OpenVokaturi to free up memory")
-                del vk
-                del ds
-                gc.collect()
-                vk = OpenVokaturiImp()
-                ds = DeepSpeechImp()
+            # if count % 20 == 0:
+            #     logging.info("restarting Deepspeech and OpenVokaturi to free up memory")
+            #     del vk
+            #     del ds
+            #     gc.collect()
+            #     vk = OpenVokaturiImp()
+            #     ds = DeepSpeechImp()
             try:
                 segment.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 count = segment.order + 1

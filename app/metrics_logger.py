@@ -32,6 +32,6 @@ def write_to_logfile(log_file, string):
 
 def delete_logfile_if_exists(log_file):
     try:
-        os.remove(log_file)
+        os.remove("results/"+log_file)
     except OSError:
         pass

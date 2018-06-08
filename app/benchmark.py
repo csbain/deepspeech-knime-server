@@ -32,6 +32,7 @@ def run_simulation(vad, processing_type):
     # p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
     # p.daemon = True
     # p.start()
+
     t = threading.Thread(target=metrics_logger.logger, args=(benchmark_name + ".log",))
     t.start()
     if processing_type == "multiprocessor":
