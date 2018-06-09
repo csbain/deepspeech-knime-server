@@ -71,7 +71,7 @@ class MultiProcessorService:
         logging.info("Number of segments to process: " + str(len(seg_list)))
         logging.info("Longest duration of segment: " + str(max_seg_length))
 
-    def process_segment_list_worker(self, segment, total_count):
+    def process_segment(self, segment, total_count):
         try:
             vk = OpenVokaturiImp()
             ds = DeepSpeechImp()
