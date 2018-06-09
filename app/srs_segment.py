@@ -13,6 +13,7 @@ class SRSegment:
     }
     start_time = None
     end_time = None
+    exception = None
 
     def __init__(self, order, timestamp, duration, path):
         self.order = order
@@ -28,5 +29,6 @@ class SRSegment:
             "content": self.content,
             "emotion": self.emotion,
             "start_time": self.start_time,
-            "end_time": self.end_time
+            "end_time": self.end_time,
+            "exception": self.exception
         }

@@ -2,7 +2,7 @@ import logging
 from flask import Flask, request, make_response, jsonify
 import gc
 import util
-from multi_processor_service import MultiProcessorService
+from multi_processor_service2 import MultiProcessorService
 from single_threaded_service import SingleThreadedService
 
 request_in_progress = 0

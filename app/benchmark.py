@@ -1,6 +1,6 @@
 import threading
 import metrics_logger
-from multi_processor_service import MultiProcessorService
+from multi_processor_service2 import MultiProcessorService
 from single_threaded_service import SingleThreadedService
 import logging
 import json
