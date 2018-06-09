@@ -38,7 +38,7 @@ class MultiProcessorService:
         if num_consumers > 1:
             num_consumers = num_consumers - 1 # allow one spare process for main thread
         results = []
-        with concurrent.futures.Pro(max_workers=num_consumers) as executor:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=num_consumers) as executor:
             to_do = []
             for segment in seg_list:
                 future = executor.submit(self.process_segment, segment, total_count)
