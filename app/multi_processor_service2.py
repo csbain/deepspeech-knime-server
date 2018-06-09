@@ -75,7 +75,7 @@ class MultiProcessorService:
         try:
             vk = OpenVokaturiImp()
             ds = DeepSpeechImp()
-            segment.start = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            segment.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             count = segment.order + 1
             logging.info("starting segment (processing emotion): " + str(count) + "/" + str(total_count))
             segment.emotion = vk.analyse_audio(segment.path)
