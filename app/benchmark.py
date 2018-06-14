@@ -28,6 +28,9 @@ def run_simulation(vad, process_count):
     file = "alice.mp3"
     if process_count == "MAX":
         process_count = cpu_count
+    elif util.is_int(process_count):
+        process_count = int(process_count)
+    else: exit("Invalid processes value")
 
     benchmark_name = "processes"+str(process_count)+"_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark_name)
@@ -47,7 +50,7 @@ def run_simulation(vad, process_count):
 
 
 vads = [0,1,2,3]
-processes_ammount = ["MAX"] + list(range(1,multiprocessing.cpu_count()+1))
+processes_ammount = ["MAX"] + [str(i) for i in range(1, multiprocessing.cpu_count()+1)]
 parser = argparse.ArgumentParser(description='Run benchmarks on Deepseech integration')
 parser.add_argument('-v', '--vad', choices=vads, type=int, required=True)
 parser.add_argument('-p', '--processes', choices=processes_ammount, required=True)
