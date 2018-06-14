@@ -47,7 +47,7 @@ def run_simulation(vad, process_count):
 
 
 vads = [0,1,2,3]
-processes_ammount = ["MAX"] + range(1,multiprocessing.cpu_count()+1)
+processes_ammount = ["MAX"] + list(range(1,multiprocessing.cpu_count()+1))
 processing_types = ['multiprocessor','singlethreaded']
 parser = argparse.ArgumentParser(description='Run benchmarks on Deepseech integration')
 parser.add_argument('-v', '--vad', choices=vads, type=int, required=True)
