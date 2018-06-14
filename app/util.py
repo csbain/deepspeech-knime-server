@@ -25,6 +25,19 @@ def restart_flask_server():
     sys.exit("Forced exit via web app")
 
 
+def is_int(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        pass
+    try:
+        import unicodedata
+        unicodedata.numeric(s)
+        return True
+    except (TypeError, ValueError):
+        pass
+    return False
 
 def is_request_underway():
     current_process = psutil.Process()

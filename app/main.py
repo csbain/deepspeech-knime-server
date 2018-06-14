@@ -2,9 +2,8 @@ import logging
 from flask import Flask, request, make_response, jsonify
 import gc
 import util
-from multi_processor_service2 import MultiProcessorService
-from single_threaded_service import SingleThreadedService
-
+from asr_service import ASRService
+import multiprocessing
 request_in_progress = 0
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
@@ -24,8 +23,6 @@ def allowed_file(filename):
 
 def throw_error_code(error_code, error_statement="error"):
     return make_response(error_statement, error_code)
-
-
 
 
 @app.route('/', methods=['GET'])
@@ -58,22 +55,29 @@ def upload():
             ext = file.filename.rsplit('.', 1)[1].lower()
             file_bytes = file.read()
 
-            multiple_processes = request.args.get('multiple_processes', default="FALSE", type=str).upper()
-            if multiple_processes not in ["TRUE", "FALSE"]:
-                error = "multiple_processes must either be true, false (defaults to false)"
-                logging.error(error)
-                return throw_error_code(400, error)
+            processes = request.args.get('processes', default="MAX", type=str).upper()
+            cpu_count = multiprocessing.cpu_count()
+            if util.is_int(processes):
+                print("assigning "+processes+" processes")
+                processes = int(processes)
+
+                if processes > cpu_count:
+                    return throw_error_code(400, "Process count must not exceed cpu count of "+ str(cpu_count) + \
+                                            " not using the processes argument or assigning it 'MAX' will use the " +\
+                                            "maximum processes available")
+            elif processes.upper() == "MAX":
+                processes = cpu_count
+            else:
+                return throw_error_code(400, "Invalid value for arg 'processes'")
+
+
             vad_aggressiveness = request.args.get('vad_aggressiveness', default=1, type=int)
             if vad_aggressiveness not in [0, 1, 2, 3]:
                 error = "vad_aggressiveness must be an integer between and including 1 and 3"
                 logging.error(error)
                 return throw_error_code(400, error)
-
-            if multiple_processes == "TRUE":
-                service = MultiProcessorService()
-            elif multiple_processes == "FALSE":
-                service = SingleThreadedService()
-            result = service.process_audio(file_bytes, ext, vad_aggressiveness)
+            service = ASRService()
+            result = service.process_audio(file_bytes, ext, vad_aggressiveness, processes)
             gc.collect()
             return make_response(jsonify(result), 200)
 

@@ -1,13 +1,13 @@
 import threading
 import metrics_logger
-from multi_processor_service2 import MultiProcessorService
-from single_threaded_service import SingleThreadedService
+from asr_service import ASRService
 import logging
 import json
 import os
 import gc
+import multiprocessing
 import argparse
-
+import util
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
 
@@ -23,23 +23,20 @@ def write_results_to_file(filename, results):
         json.dump(results, outfile)
 
 
-def run_simulation(vad, processing_type):
-
+def run_simulation(vad, process_count):
+    cpu_count = multiprocessing.cpu_count()
     file = "alice.mp3"
-    benchmark_name = processing_type+"_vad" + str(vad)
+    if process_count == "MAX":
+        process_count = cpu_count
+
+    benchmark_name = "processes"+process_count+"_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark_name)
     file_bytes = get_file_bytes(file)
-    # p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
-    # p.daemon = True
-    # p.start()
 
     t = threading.Thread(target=metrics_logger.logger, args=(benchmark_name + ".log",))
     t.start()
-    if processing_type == "multiprocessor":
-        service = MultiProcessorService()
-    elif processing_type == "singlethreaded":
-        service = SingleThreadedService()
-    result = service.process_audio(file_bytes, "mp3", vad)
+    service = ASRService()
+    result = service.process_audio(file_bytes, "mp3", vad, process_count)
     t.do_run = False
     t.join()
     write_results_to_file(benchmark_name + "_result.json", result)
@@ -58,17 +55,8 @@ args = parser.parse_args()
 
 
 if __name__ == "__main__":
-
-
     if not os.path.exists("results"):
         os.makedirs("results")
-
     run_simulation(args.vad, args.processing_type)
-
-
-
-    # p = Process(target=metrics_logger.logger, args=(benchmark + ".log",))
-    # p.daemon = True
-    # p.start()
 
 

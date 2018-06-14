@@ -13,13 +13,10 @@ from temp_file_helper import TempFileHelper
 from web_rtc_vad_helper import WebRTCVADHelper
 import concurrent.futures
 
-class MultiProcessorService:
+class ASRService:
 
 
-
-
-
-    def process_audio(self, file_bytes, file_type, vad_aggressiveness):
+    def process_audio(self, file_bytes, file_type, vad_aggressiveness, processes):
 
         tfh = TempFileHelper()
         logging.info("Preprocessing audio from " + file_type + " format")
