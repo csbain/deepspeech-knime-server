@@ -23,23 +23,26 @@ def write_results_to_file(filename, results):
         json.dump(results, outfile)
 
 
-def run_simulation(vad, process_count):
-    cpu_count = multiprocessing.cpu_count()
+def run_simulation(vad, processes):
     file = "alice.mp3"
-    if process_count == "MAX":
-        process_count = cpu_count
-    elif util.is_int(process_count):
-        process_count = int(process_count)
+
+    cpu_count = multiprocessing.cpu_count()
+    if util.is_int(processes):
+        print("assigning " + processes + " processes")
+        processes = int(processes)
+    elif processes.upper() == "MAX":
+        processes = cpu_count
     else: exit("Invalid processes value")
 
-    benchmark_name = "processes"+str(process_count)+"_vad" + str(vad)
+
+    benchmark_name = "processes"+str(processes)+"_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark_name)
     file_bytes = get_file_bytes(file)
 
     t = threading.Thread(target=metrics_logger.logger, args=(benchmark_name + ".log",))
     t.start()
     service = ASRService()
-    result = service.process_audio(file_bytes, "mp3", vad, process_count)
+    result = service.process_audio(file_bytes, "mp3", vad, processes)
     t.do_run = False
     t.join()
     write_results_to_file(benchmark_name + "_result.json", result)
