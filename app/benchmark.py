@@ -29,7 +29,7 @@ def run_simulation(vad, process_count):
     if process_count == "MAX":
         process_count = cpu_count
 
-    benchmark_name = "processes"+process_count+"_vad" + str(vad)
+    benchmark_name = "processes"+str(process_count)+"_vad" + str(vad)
     logging.info("STARTING BENCHMARK: " + benchmark_name)
     file_bytes = get_file_bytes(file)
 
