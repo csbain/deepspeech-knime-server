@@ -31,7 +31,7 @@ class ASRService:
         del file_bytes
         gc.collect()
         process_start_time = time.time()
-        num_consumers = multiprocessing.cpu_count()
+        num_consumers = processes
         if num_consumers > 1:
             num_consumers = num_consumers - 1 # allow one spare process for main thread
         results = []
