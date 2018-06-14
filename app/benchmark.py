@@ -57,6 +57,6 @@ args = parser.parse_args()
 if __name__ == "__main__":
     if not os.path.exists("results"):
         os.makedirs("results")
-    run_simulation(args.vad, args.processing_type)
+    run_simulation(args.vad, args.processes)
 
 
