@@ -81,13 +81,13 @@ class ASRService:
             logging.error("Error in segment:\n" + str(e) + "\n" + str(segment.get_dict_obj()))
             segment.exception = str(e)
         finally:
+            segment.end_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            del vk
+            del ds
             try:
                 os.remove(segment.path)
             except:
                 pass
-            segment.end_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            del vk
-            del ds
             gc.collect()
         return segment.get_dict_obj()
 
