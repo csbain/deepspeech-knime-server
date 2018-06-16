@@ -4,7 +4,7 @@ import wave
 import webrtcvad
 import shared_params
 from srs_segment import SRSegment
-
+import util
 
 class WebRTCVADHelper:
     vad = None
@@ -13,11 +13,10 @@ class WebRTCVADHelper:
     sr_segment_count = 0
     sr_segment_list = []
 
-    def __init__(self, tfh, import_wav_path, vad_aggressiveness):
+    def __init__(self, import_wav_path, vad_aggressiveness):
         self.vad = webrtcvad.Vad(vad_aggressiveness)  # agressiveness
         self.sample_rate = shared_params.SAMPLE_RATE
         self.pcm_data = None
-        self.tfh = tfh
 
         with contextlib.closing(wave.open(import_wav_path, 'rb')) as wf:
             num_channels = wf.getnchannels()
@@ -108,7 +107,7 @@ class WebRTCVADHelper:
         """Writes a .wav file.
         Takes path, PCM audio data, and sample rate.
         """
-        temp_filename = self.tfh.generate_temp_filename("wav")
+        temp_filename = util.generate_temp_filename("wav")
         duration = 0
         with contextlib.closing(wave.open(temp_filename, 'wb')) as wf:
             wf.setnchannels(1)

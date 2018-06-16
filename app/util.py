@@ -1,9 +1,11 @@
 import logging
-import multiprocessing
-import time
-import subprocess, os, signal, sys
-import signal, psutil
+import psutil
 import sys
+import os
+import shutil
+import random
+import string
+import shared_params
 
 def format_time_duration(start, end):
     hours, rem = divmod(end - start, 3600)
@@ -25,6 +27,26 @@ def restart_flask_server():
     sys.exit("Forced exit via web app")
 
 
+def reset_temp_dir(self):
+    try:
+        shutil.rmtree(shared_params.WORKING_TEMP_FOLDER, ignore_errors=True)
+    except OSError:
+        pass
+    os.makedirs(shared_params.WORKING_TEMP_FOLDER)
+
+
+
+def generate_temp_filename(self, ext=None):
+    file_name = ''.join(random.choices(string.ascii_letters + string.digits, k=36))
+    if ext:
+        file_name += "." + ext
+    path = os.path.join(shared_params.WORKING_TEMP_FOLDER, file_name)
+    # print(path)
+    logging.debug("new tempfile generated: " + path)
+    return path
+
+
+
 def is_int(s):
     try:
         int(s)
@@ -43,3 +65,5 @@ def is_request_underway():
     current_process = psutil.Process()
     children = current_process.children(recursive=True)
     return True if len(children) > 0 else False
+
+

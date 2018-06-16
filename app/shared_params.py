@@ -21,3 +21,5 @@ WORD_COUNT_WEIGHT = 1.00
 VALID_WORD_COUNT_WEIGHT = 1.00
 
 DEFAULT_METRICS_LOG_FILE = "metrics.log"
+
+WORKING_TEMP_FOLDER = "/tmp/knime_deepspeech_app/"
