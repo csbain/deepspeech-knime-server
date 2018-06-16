@@ -38,7 +38,7 @@ def frame_generator(frame_duration_ms, audio, sample_rate):
         offset += n
 
 
-def vad_processor(self, sample_rate, frame_duration_ms,
+def vad_processor(sample_rate, frame_duration_ms,
                   padding_duration_ms, vad, frames):
     sr_segment_list = []
     sr_segment_count = 0
@@ -75,8 +75,8 @@ def vad_processor(self, sample_rate, frame_duration_ms,
             if num_unvoiced > 0.9 * ring_buffer.maxlen:
                 # sys.stdout.write('-(%s)' % (frame.timestamp + frame.duration))
                 triggered = False
-                temp_file_name, wav_duration = self.write_wave(b''.join([f.file_bytes for f in voiced_frames]))
-                srsegment = SRSegment(self.sr_segment_count, frame.timestamp - wav_duration,
+                temp_file_name, wav_duration = write_wave(b''.join([f.file_bytes for f in voiced_frames]))
+                srsegment = SRSegment(sr_segment_count, frame.timestamp - wav_duration,
                                       wav_duration, temp_file_name)
                 sr_segment_list.append(srsegment)
                 sr_segment_count += 1
@@ -86,8 +86,8 @@ def vad_processor(self, sample_rate, frame_duration_ms,
     # If we have any leftover voiced audio when we run out of input,
     # yield it.
     if voiced_frames:
-        temp_file_name, wav_duration = self.write_wave(b''.join([f.file_bytes for f in voiced_frames]))
-        srsegment = SRSegment(self.sr_segment_count, frame.timestamp - wav_duration,
+        temp_file_name, wav_duration = write_wave(b''.join([f.file_bytes for f in voiced_frames]))
+        srsegment = SRSegment(sr_segment_count, frame.timestamp - wav_duration,
                               wav_duration, temp_file_name)
         sr_segment_list.append(srsegment)
         sr_segment_count += 1
