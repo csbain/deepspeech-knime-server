@@ -7,7 +7,7 @@ import util
 import audio_utils
 from deep_speech_imp import DeepSpeechImp
 from open_vokaturi_imp import OpenVokaturiImp
-from web_rtc_vad_helper import WebRTCVADHelper
+import web_rtc_vad_helper
 import concurrent.futures
 
 class ASRService:
@@ -15,8 +15,8 @@ class ASRService:
     def process_audio(self, file_bytes, file_type, vad_aggressiveness, processes):
         logging.info("Preprocessing audio from " + file_type + " format")
         logging.info("Breaking down audio into smaller chunks")
-        webrtcvadhelper = WebRTCVADHelper()
-        seg_list = webrtcvadhelper.get_sr_segment_list(audio_utils.process_audio_dsp(file_bytes, file_type), vad_aggressiveness)
+
+        seg_list = web_rtc_vad_helper.get_sr_segment_list(audio_utils.process_audio_dsp(file_bytes, file_type), vad_aggressiveness)
         self.print_metrics(seg_list)
         total_count = len(seg_list)
         del file_bytes
