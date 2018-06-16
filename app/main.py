@@ -15,6 +15,7 @@ ALLOWED_EXTENSIONS = set(['wav', 'mp3', 'flac', 'aiff', 'm4a', 'm4b', 'au', 'dvf
 
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 1 GB
 
+asr = ASRService()
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -74,7 +75,8 @@ def process():
                 error = "vad_aggressiveness must be an integer between and including 1 and 3"
                 logging.error(error)
                 return throw_error_code(400, error)
-            result = ASRService.process_audio(file_bytes, ext, vad_aggressiveness, processes)
+
+            result = asr.process_audio(file_bytes, ext, vad_aggressiveness, processes)
             gc.collect()
             return make_response(jsonify(result), 200)
 
