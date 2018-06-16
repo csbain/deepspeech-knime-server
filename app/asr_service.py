@@ -72,7 +72,6 @@ class ASRService:
             start_time = time.time()
             segment.content = ds.process_audio(segment.path)
             time_taken = (time.time() - start_time)
-            os.remove(segment.path)
             logging.debug(segment.content)
             logging.info("finished segment: " + str(count) + "/" + str(total_count) + ", duration length: " + str(
                 segment.duration) + ", time taken: " + str(
@@ -82,6 +81,10 @@ class ASRService:
             logging.error("Error in segment:\n" + str(e) + "\n" + str(segment.get_dict_obj()))
             segment.exception = str(e)
         finally:
+            try:
+                os.remove(segment.path)
+            except:
+                pass
             segment.end_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             del vk
             del ds
