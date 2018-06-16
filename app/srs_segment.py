@@ -27,7 +27,11 @@ class SRSegment:
             "timestamp": self.timestamp,
             "duration": self.duration,
             "content": self.content,
-            "emotion": self.emotion,
+            "emotion_neutrality": self.emotion['neutrality'],
+            "emotion_happiness": self.emotion['happiness'],
+            "emotion_sadness": self.emotion['sadness'],
+            "emotion_anger": self.emotion['anger'],
+            "emotion_fear": self.emotion['fear'],
             "start_time": self.start_time,
             "end_time": self.end_time,
             "exception": self.exception
