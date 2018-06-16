@@ -33,7 +33,5 @@ class OpenVokaturiImp:
             "anger": emotionProbabilities.anger,
             "fear": emotionProbabilities.fear
         }
-        voice.reset()
         voice.destroy()
-        del voice
         return emotion

@@ -65,14 +65,14 @@ class ASRService:
             ds = DeepSpeechImp()
             segment.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             count = segment.order + 1
-            logging.info("starting segment (processing emotion): " + str(count) + "/" + str(total_count))
-            segment.emotion = vk.analyse_audio(segment.path)
-            logging.debug(segment.emotion)
             logging.info("starting segment (processing speech): " + str(count) + "/" + str(total_count))
             start_time = time.time()
             segment.content = ds.process_audio(segment.path)
             time_taken = (time.time() - start_time)
             logging.debug(segment.content)
+            logging.info("starting segment (processing emotion): " + str(count) + "/" + str(total_count))
+            segment.emotion = vk.analyse_audio(segment.path)
+            logging.debug(segment.emotion)
             logging.info("finished segment: " + str(count) + "/" + str(total_count) + ", duration length: " + str(
                 segment.duration) + ", time taken: " + str(
                 round(time_taken, 2)) + ", duration/segment_lenght ratio: " + str(
