@@ -83,4 +83,5 @@ def upload():
 
 
 if __name__ == "__main__":
+    util.reset_temp_dir()
     app.run(host='0.0.0.0', port=5000, debug=False, threaded=False)

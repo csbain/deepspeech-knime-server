@@ -27,7 +27,7 @@ def restart_flask_server():
     sys.exit("Forced exit via web app")
 
 
-def reset_temp_dir(self):
+def reset_temp_dir():
     try:
         shutil.rmtree(shared_params.WORKING_TEMP_FOLDER, ignore_errors=True)
     except OSError:
@@ -36,7 +36,7 @@ def reset_temp_dir(self):
 
 
 
-def generate_temp_filename(self, ext=None):
+def generate_temp_filename(ext=None):
     file_name = ''.join(random.choices(string.ascii_letters + string.digits, k=36))
     if ext:
         file_name += "." + ext
