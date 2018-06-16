@@ -15,7 +15,8 @@ class ASRService:
     def process_audio(self, file_bytes, file_type, vad_aggressiveness, processes):
         logging.info("Preprocessing audio from " + file_type + " format")
         logging.info("Breaking down audio into smaller chunks")
-        seg_list = WebRTCVADHelper.get_sr_segment_list(audio_utils.process_audio_dsp(file_bytes, file_type), vad_aggressiveness)
+        webrtcvadhelper = WebRTCVADHelper()
+        seg_list = webrtcvadhelper.get_sr_segment_list(audio_utils.process_audio_dsp(file_bytes, file_type), vad_aggressiveness)
         self.print_metrics(seg_list)
         total_count = len(seg_list)
         del file_bytes
