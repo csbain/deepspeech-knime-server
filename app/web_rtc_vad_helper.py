@@ -7,31 +7,25 @@ from srs_segment import SRSegment
 import util
 
 class WebRTCVADHelper:
-    vad = None
-    sample_rate = None
+
 
     sr_segment_count = 0
     sr_segment_list = []
 
-    def __init__(self, import_wav_path, vad_aggressiveness):
-        self.vad = webrtcvad.Vad(vad_aggressiveness)  # agressiveness
-        self.sample_rate = shared_params.SAMPLE_RATE
-        self.pcm_data = None
+    def get_sr_segment_list(self, import_wav_path, vad_aggressiveness):
+        vad = webrtcvad.Vad(vad_aggressiveness)  # agressiveness
+        sample_rate = shared_params.SAMPLE_RATE
 
         with contextlib.closing(wave.open(import_wav_path, 'rb')) as wf:
-            num_channels = wf.getnchannels()
-            assert num_channels == 1
-            sample_width = wf.getsampwidth()
-            assert sample_width == 2
+            self.num_channels = wf.getnchannels()
+            self.sample_width = wf.getsampwidth()
             self.sample_rate = wf.getframerate()
-            assert self.sample_rate in (8000, 16000, 32000)
-            self.pcm_data = wf.readframes(wf.getnframes())
+            pcm_data = wf.readframes(wf.getnframes())
 
-        frames = self.frame_generator(30, self.pcm_data, self.sample_rate)
+        frames = self.frame_generator(30, pcm_data, sample_rate)
         frames = list(frames)
-        self.vad_processor(self.sample_rate, 30, 300, self.vad, frames)
+        self.vad_processor(sample_rate, 30, 300, vad, frames)
 
-    def get_sr_segment_list(self):
         return self.sr_segment_list
 
     def frame_generator(self, frame_duration_ms, audio, sample_rate):

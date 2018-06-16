@@ -36,8 +36,7 @@ def restart():
 
 
 @app.route('/process', methods=['POST'])
-def upload():
-    gc.collect()
+def process():
     if request.method == 'POST':
         if util.is_request_underway():
             return throw_error_code(429, "Maximum of one request is permitted at any given time.")
@@ -70,14 +69,12 @@ def upload():
             else:
                 return throw_error_code(400, "Invalid value for arg 'processes'")
 
-
             vad_aggressiveness = request.args.get('vad_aggressiveness', default=1, type=int)
             if vad_aggressiveness not in [0, 1, 2, 3]:
                 error = "vad_aggressiveness must be an integer between and including 1 and 3"
                 logging.error(error)
                 return throw_error_code(400, error)
-            service = ASRService()
-            result = service.process_audio(file_bytes, ext, vad_aggressiveness, processes)
+            result = ASRService.process_audio(file_bytes, ext, vad_aggressiveness, processes)
             gc.collect()
             return make_response(jsonify(result), 200)
 

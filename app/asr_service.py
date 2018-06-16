@@ -1,12 +1,10 @@
 import gc
 import logging
-import math
-import multiprocessing
 import os
 import datetime
 import time
 import util
-from audio_utils import AudioUtils
+import audio_utils
 from deep_speech_imp import DeepSpeechImp
 from open_vokaturi_imp import OpenVokaturiImp
 from web_rtc_vad_helper import WebRTCVADHelper
@@ -14,18 +12,12 @@ import concurrent.futures
 
 class ASRService:
 
-
     def process_audio(self, file_bytes, file_type, vad_aggressiveness, processes):
-
         logging.info("Preprocessing audio from " + file_type + " format")
-        audioutil = AudioUtils(file_bytes, file_type)
         logging.info("Breaking down audio into smaller chunks")
-        web_rtcvad_helper = WebRTCVADHelper(audioutil.get_processed_file(), vad_aggressiveness)
-        seg_list = web_rtcvad_helper.get_sr_segment_list()
+        seg_list = WebRTCVADHelper.get_sr_segment_list(audio_utils.process_audio_dsp(file_bytes, file_type), vad_aggressiveness)
         self.print_metrics(seg_list)
         total_count = len(seg_list)
-        del web_rtcvad_helper
-        del audioutil
         del file_bytes
         gc.collect()
         process_start_time = time.time()

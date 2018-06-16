@@ -66,4 +66,3 @@ def is_request_underway():
     children = current_process.children(recursive=True)
     return True if len(children) > 0 else False
 
-
