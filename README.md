@@ -6,14 +6,18 @@ This is a dockerfile to serve a [knime-deepspeech-server](https://hub.docker.com
 # How to use this image
     
     docker pull csbain/deepspeech-knime-server:latest
-    docker run csbain/deepspeech-knime-server -p 5000:5000
+    docker run -p 5000:5000 csbain/deepspeech-knime-server
+
+    If you are experiencing space issues within the docker image you can use the following command to enable tmpfs 
+    (https://docs.docker.com/storage/tmpfs/#choosing-the---tmpfs-or---mount-flag)
+    docker run -p 5000:5000 --tmpfs /tmp csbain/deepspeech-knime-server
 
 
 ## Using the docker image
 
 Inference on the model is done via http post requests, For example with the following curl command:
 
-    curl -F "file=@/home/user1/audio.mp3" 127.0.0.1:5000/upload
+    curl -F "file=@/home/user1/audio.mp3" 127.0.0.1:5000/process
 
 ## Background for this image
 This project was the outcome of a Queensland University of Technology Masters project completed with an industry partner.
